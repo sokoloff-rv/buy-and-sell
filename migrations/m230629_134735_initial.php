@@ -67,4 +67,24 @@ class m230629_134735_initial extends Migration
         $this->addForeignKey('fk_comments_user_id', '{{%comments}}', 'user_id', '{{%users}}', 'id', 'CASCADE');
         $this->addForeignKey('fk_comments_offer_id', '{{%comments}}', 'offer_id', '{{%offers}}', 'id', 'CASCADE');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function safeDown()
+    {
+        $this->dropForeignKey('fk_comments_offer_id', '{{%comments}}');
+        $this->dropForeignKey('fk_comments_user_id', '{{%comments}}');
+        $this->dropForeignKey('fk_images_offer_id', '{{%images}}');
+        $this->dropForeignKey('fk_offer_categories_category_id', '{{%offer_categories}}');
+        $this->dropForeignKey('fk_offer_categories_offer_id', '{{%offer_categories}}');
+        $this->dropForeignKey('fk_offers_user_id', '{{%offers}}');
+
+        $this->dropTable('{{%comments}}');
+        $this->dropTable('{{%images}}');
+        $this->dropTable('{{%offer_categories}}');
+        $this->dropTable('{{%categories}}');
+        $this->dropTable('{{%offers}}');
+        $this->dropTable('{{%users}}');
+    }
 }
