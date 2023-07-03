@@ -16,10 +16,10 @@ use Yii;
  * @property string|null $vk_id
  * @property string $created_at
  * @property string $updated_at
+ * @property string $role
  *
  * @property Comment[] $comments
  * @property Offer[] $offers
- * @property UserRole[] $userRoles
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -37,9 +37,9 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'surname', 'email', 'password'], 'required'],
+            [['name', 'surname', 'email', 'password', 'role'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'surname', 'email', 'password', 'avatar', 'vk_id'], 'string', 'max' => 255],
+            [['name', 'surname', 'email', 'password', 'avatar', 'vk_id', 'role'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['vk_id'], 'unique'],
         ];
@@ -60,6 +60,7 @@ class User extends \yii\db\ActiveRecord
             'vk_id' => 'Vk ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'role' => 'Role',
         ];
     }
 
@@ -81,15 +82,5 @@ class User extends \yii\db\ActiveRecord
     public function getOffers()
     {
         return $this->hasMany(Offer::class, ['user_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[UserRole]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserRoles()
-    {
-        return $this->hasMany(UserRole::class, ['user_id' => 'id']);
     }
 }
