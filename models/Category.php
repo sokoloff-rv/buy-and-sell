@@ -11,7 +11,7 @@ use Yii;
  * @property string $name
  * @property string|null $image
  *
- * @property OfferCategory[] $offerCategory
+ * @property Offer[] $offers
  */
 class Category extends \yii\db\ActiveRecord
 {
@@ -47,12 +47,13 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[OfferCategory]].
+     * Gets query for [[Offers]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOfferCategories()
+    public function getOffers()
     {
-        return $this->hasMany(OfferCategory::class, ['category_id' => 'id']);
+        return $this->hasMany(Offer::class, ['id' => 'offer_id'])
+            ->viaTable('offer_categories', ['category_id' => 'id']);
     }
 }
