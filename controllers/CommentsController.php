@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii\web\Controller;
 
-class CommentsController extends Controller
+class CommentsController extends Controller extends AccessController
 {
     public function actionIndex()
     {

@@ -2,10 +2,24 @@
 
 namespace app\controllers;
 
-use yii\web\Controller;
-
-class TicketsController extends Controller
+class TicketsController extends AccessController
 {
+    public function getAccessRules(): array
+    {
+        return [
+            [
+                'actions' => ['index'],
+                'allow' => true,
+                'roles' => ['?', '@'],
+            ],
+            [
+                'actions' => ['new', 'edit'],
+                'allow' => true,
+                'roles' => ['@'],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         return $this->render('index');
