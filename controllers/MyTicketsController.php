@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii\web\Controller;
 
-class MyTicketsController extends Controller extends AccessController
+class MyTicketsController extends AccessController
 {
     public function actionIndex()
     {
