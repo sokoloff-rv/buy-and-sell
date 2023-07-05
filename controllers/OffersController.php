@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
-class TicketsController extends AccessController
+class OffersController extends AccessController
 {
     public function getAccessRules(): array
     {
         return [
             [
-                'actions' => ['index'],
+                'actions' => ['index', 'category'],
                 'allow' => true,
                 'roles' => ['?', '@'],
             ],
@@ -25,13 +25,18 @@ class TicketsController extends AccessController
         return $this->render('index');
     }
 
-    public function actionNew()
+    public function actionAdd()
     {
-        return $this->render('new');
+        return $this->render('add');
     }
 
     public function actionEdit()
     {
         return $this->render('edit');
+    }
+
+    public function actionCategory()
+    {
+        return $this->render('category');
     }
 }
