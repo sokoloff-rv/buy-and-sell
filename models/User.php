@@ -16,7 +16,6 @@ use Yii;
  * @property string|null $vk_id
  * @property string $created_at
  * @property string $updated_at
- * @property string $role
  *
  * @property Comment[] $comments
  * @property Offer[] $offers
@@ -37,9 +36,9 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'surname', 'email', 'password', 'role'], 'required'],
+            [['name', 'surname', 'email', 'password'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'surname', 'email', 'password', 'avatar', 'vk_id', 'role'], 'string', 'max' => 255],
+            [['name', 'surname', 'email', 'password', 'avatar', 'vk_id'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['vk_id'], 'unique'],
         ];
@@ -60,7 +59,6 @@ class User extends \yii\db\ActiveRecord
             'vk_id' => 'Vk ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
-            'role' => 'Role',
         ];
     }
 
