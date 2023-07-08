@@ -22,62 +22,83 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
+
 <head>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
+
 <body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+    <?php $this->beginBody() ?>
 
-<header id="header">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
-    ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
-    ]);
-    NavBar::end();
-    ?>
-</header>
-
-<main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
-        <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-        <?php endif ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
-
-<footer id="footer" class="mt-auto py-3 bg-light">
-    <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
+    <header class="header">
+        <div class="header__wrapper">
+            <a class="header__logo logo" href="main.html">
+                <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
+            </a>
+            <nav class="header__user-menu">
+                <ul class="header__list">
+                    <li class="header__item">
+                        <a href="my-tickets.html">Публикации</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="comments.html">Комментарии</a>
+                    </li>
+                </ul>
+            </nav>
+            <form class="search" method="get" action="#" autocomplete="off">
+                <input type="search" name="query" placeholder="Поиск" aria-label="Поиск">
+                <div class="search__icon"></div>
+                <div class="search__close-btn"></div>
+            </form>
+            <a class="header__avatar avatar" href="#">
+                <img src="/img/avatar.jpg" srcset="img/avatar@2x.jpg 2x" alt="Аватар пользователя">
+            </a>
+            <a class="header__input" href="sign-up.html">Вход и регистрация</a>
         </div>
-    </div>
-</footer>
+    </header>
 
-<?php $this->endBody() ?>
+    <main class="page-content">
+        <section class="categories-list">
+            <h1 class="visually-hidden">Сервис объявлений "Куплю - продам"</h1>
+            <?php if (!empty($this->params['breadcrumbs'])) : ?>
+                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+            <?php endif ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
+        </section>
+    </main>
+
+    <footer class="page-footer">
+        <div class="page-footer__wrapper">
+            <div class="page-footer__col">
+                <a href="/" class="page-footer__logo-academy" aria-label="Ссылка на сайт HTML-Академии">
+                    <svg width="132" height="46">
+                        <use xlink:href="img/sprite_auto.svg#logo-htmlac"></use>
+                    </svg>
+                </a>
+                <p class="page-footer__copyright">© 2019 Проект Академии</p>
+            </div>
+            <div class="page-footer__col">
+                <a href="/" class="page-footer__logo logo">
+                    <img src="/img/logo.svg" width="179" height="35" alt="Логотип Куплю Продам">
+                </a>
+            </div>
+            <div class="page-footer__col">
+                <ul class="page-footer__nav">
+                    <li>
+                        <a href="/">Вход и регистрация</a>
+                    </li>
+                    <li>
+                        <a href="/">Создать объявление</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>
