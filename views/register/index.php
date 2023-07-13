@@ -28,10 +28,34 @@ $this->title = 'Регистрация';
                 </label>
             </div>
         </div>
-        <?= $form->field($model, 'name')->textInput(['class' => 'js-field', 'id' => 'user-name'])->label('Имя и фамилия') ?>
-        <?= $form->field($model, 'email')->textInput(['class' => 'js-field', 'id' => 'user-email'])->label('Эл. почта') ?>
-        <?= $form->field($model, 'password')->passwordInput(['class' => 'js-field', 'id' => 'user-password'])->label('Пароль') ?>
-        <?= $form->field($model, 'password_repeat')->passwordInput(['class' => 'js-field', 'id' => 'user-password-again'])->label('Пароль еще раз') ?>
+        <?= $form->field($model, 'name', [
+            'template' => '<div class="form__field sign-up__field">{input}{label}</div>',
+            'options' => ['tag' => false],
+            'inputOptions' => ['class' => 'js-field', 'id' => 'user-name'],
+            'labelOptions' => ['for' => 'user-name'],
+            'errorOptions' => ['tag' => null],
+        ])->textInput()->label('Имя и фамилия') ?>
+        <?= $form->field($model, 'email', [
+            'template' => '<div class="form__field sign-up__field">{input}{label}</div>',
+            'options' => ['tag' => false],
+            'inputOptions' => ['class' => 'js-field', 'id' => 'user-email'],
+            'labelOptions' => ['for' => 'user-email'],
+            'errorOptions' => ['tag' => null],
+        ])->textInput()->label('Эл. почта') ?>
+        <?= $form->field($model, 'password', [
+            'template' => '<div class="form__field sign-up__field">{input}{label}</div>',
+            'options' => ['tag' => false],
+            'inputOptions' => ['class' => 'js-field', 'id' => 'user-password'],
+            'labelOptions' => ['for' => 'user-password'],
+            'errorOptions' => ['tag' => null],
+        ])->passwordInput()->label('Пароль') ?>
+        <?= $form->field($model, 'password_repeat', [
+            'template' => '<div class="form__field sign-up__field">{input}{label}</div>',
+            'options' => ['tag' => false],
+            'inputOptions' => ['class' => 'js-field', 'id' => 'user-password-again'],
+            'labelOptions' => ['for' => 'user-password-again'],
+            'errorOptions' => ['tag' => null],
+        ])->passwordInput()->label('Пароль еще раз') ?>
         <div class="form-group">
             <?= Html::submitButton('Создать аккаунт', ['class' => 'sign-up__button btn btn--medium js-button']) ?>
         </div>
