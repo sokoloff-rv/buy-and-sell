@@ -33,16 +33,16 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
     <header class="header">
         <div class="header__wrapper">
-            <a class="header__logo logo" href="main.html">
+            <a class="header__logo logo" href="/">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
             <nav class="header__user-menu">
                 <ul class="header__list">
                     <li class="header__item">
-                        <a href="my-tickets.html">Публикации</a>
+                        <a href="my-tickets">Публикации</a>
                     </li>
                     <li class="header__item">
-                        <a href="comments.html">Комментарии</a>
+                        <a href="comments">Комментарии</a>
                     </li>
                 </ul>
             </nav>
@@ -54,7 +54,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             <a class="header__avatar avatar" href="#">
                 <img src="/img/avatar.jpg" srcset="img/avatar@2x.jpg 2x" alt="Аватар пользователя">
             </a>
-            <a class="header__input" href="sign-up.html">Вход и регистрация</a>
+            <a class="header__input" href="/register">Вход и регистрация</a>
         </div>
     </header>
 
