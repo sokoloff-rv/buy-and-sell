@@ -59,14 +59,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     </header>
 
     <main class="page-content">
-        <section class="categories-list">
-            <h1 class="visually-hidden">Сервис объявлений "Куплю - продам"</h1>
-            <?php if (!empty($this->params['breadcrumbs'])) : ?>
-                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-            <?php endif ?>
-            <?= Alert::widget() ?>
-            <?= $content ?>
-        </section>
+        <?php if (!empty($this->params['breadcrumbs'])) : ?>
+            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+        <?php endif ?>
+        <?= Alert::widget() ?>
+        <?= $content ?>
     </main>
 
     <footer class="page-footer">
