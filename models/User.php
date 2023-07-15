@@ -50,13 +50,13 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Имя и фамилия',
             'email' => 'Email',
-            'password' => 'Password',
-            'avatar' => 'Avatar',
+            'password' => 'Пароль',
+            'avatar' => 'Аватар',
             'vk_id' => 'Vk ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
         ];
     }
 
