@@ -20,7 +20,8 @@ class RegisterController extends Controller
 
             if ($model->validate()) {
                 if ($user->avatar) {
-                    $filePath = 'uploads/' . $user->avatar->baseName . '.' . $user->avatar->extension;
+                    $uniqueFileName = uniqid() . '_' . $user->avatar->baseName . '.' . $user->avatar->extension;
+                    $filePath = 'uploads/' . $uniqueFileName;
                     $user->avatar->saveAs($filePath);
                     $user->avatar = $filePath;
                 }
