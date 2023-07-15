@@ -19,7 +19,7 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'password_repeat'], 'required'],
+            [['name', 'email', 'password', 'password_repeat'], 'required', 'message' => 'Поле не может быть пустым.'],
             [['name'], 'match', 'pattern' => '/^[a-zA-Zа-яА-ЯёЁ\s\-]*$/', 'message' => 'Имя и фамилия заполнены некорректно.'],
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Этот адрес электронной почты уже занят.'],
