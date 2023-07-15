@@ -22,5 +22,4 @@ class m230705_072521_remove_user_role extends Migration
     {
         $this->addColumn('users', 'role', $this->string()->notNull());
     }
-    */
 }

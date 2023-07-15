@@ -8,11 +8,10 @@ use yii\base\Model;
 class RegisterForm extends Model
 {
     public $name;
-    public $surname;
     public $email;
     public $password;
     public $password_repeat;
-    public $avatar; // добавлено свойство avatar
+    public $avatar;
 
     /**
      * @return array the validation rules.
@@ -21,9 +20,9 @@ class RegisterForm extends Model
     {
         return [
             // все поля обязательны
-            [['name', 'surname', 'email', 'password', 'password_repeat'], 'required'],
-            // имя и фамилия не должны содержать цифр и специальных символов
-            [['name', 'surname'], 'match', 'pattern' => '/^[a-zA-Z]*$/'],
+            [['name', 'email', 'password', 'password_repeat'], 'required'],
+            // имя не должно содержать цифр и специальных символов, кроме пробела
+            [['name'], 'match', 'pattern' => '/^[a-zA-Zа-яА-ЯёЁ\s\-]*$/', 'message' => 'Имя и фамилия заполнены некорректно.'],
             // email должен быть валидным адресом электронной почты
             ['email', 'email'],
             // email должен быть уникальным
@@ -40,8 +39,7 @@ class RegisterForm extends Model
     public function attributeLabels()
     {
         return [
-            'name' => 'Имя',
-            'surname' => 'Фамилия',
+            'name' => 'Имя и фамилия',
             'email' => 'Эл. почта',
             'password' => 'Пароль',
             'password_repeat' => 'Повторите пароль',
@@ -57,7 +55,6 @@ class RegisterForm extends Model
         
         $user = new User();
         $user->name = $this->name;
-        $user->surname = $this->surname;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->avatar = $this->avatar;

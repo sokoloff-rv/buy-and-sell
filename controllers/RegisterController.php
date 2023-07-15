@@ -26,7 +26,6 @@ class RegisterController extends Controller
                 }
 
                 $user->name = $model->name;
-                $user->surname = $model->surname;
                 $user->email = $model->email;
                 $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
                 $user->created_at = date('Y-m-d H:i:s');
