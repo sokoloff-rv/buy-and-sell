@@ -1832,12 +1832,12 @@ input:checked+.switch__button {
     width: 100%
 }
 
-.sign-up__field {
+.form-group .sign-up__field {
     margin-bottom: 26px;
     margin-left: 4px
 }
 
-.sign-up__field:last-of-type {
+.form-group:last-of-type .sign-up__field {
     margin-bottom: 40px
 }
 
