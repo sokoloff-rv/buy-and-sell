@@ -3155,3 +3155,9 @@ textarea:invalid {
     opacity: .6;
     outline: 0
 }
+
+/* custom styles */
+
+.help-block {
+    color: #FFA500;
+}
