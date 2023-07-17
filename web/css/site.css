@@ -1889,12 +1889,12 @@ input:checked+.switch__button {
     color: #fff
 }
 
-.login__field {
+.form-group .login__field {
     margin-bottom: 26px;
     margin-left: 4px
 }
 
-.login__field:last-of-type {
+.form-group:last-of-type .login__field {
     margin-bottom: 40px
 }
 
