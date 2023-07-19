@@ -46,9 +46,15 @@ class LoginController extends Controller
         $accessToken = $client->fetchAccessToken($code);
         $userAttributes = $client->getUserAttributes();
 
-        $foundUser = User::findOne(['vk_id' => $userAttributes['user_id']]);
+        $foundUser = User::findOne(['email' => $userAttributes['email']]);
         if ($foundUser) {
+            $foundUser->vk_id = $userAttributes['user_id'];
+            $foundUser->save();
             Yii::$app->user->login($foundUser);
+            return $this->goHome();
+        } else {
+            $vkUser = new VkUser();
+            $vkUser->createUser($userAttributes);
             return $this->goHome();
         }
 
