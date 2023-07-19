@@ -42,7 +42,6 @@ class LoginController extends Controller
     {
         $client = Yii::$app->authClientCollection->getClient("vkontakte");
         $code = Yii::$app->request->get('code');
-
         $accessToken = $client->fetchAccessToken($code);
         $userAttributes = $client->getUserAttributes();
 
@@ -57,9 +56,6 @@ class LoginController extends Controller
             $vkUser->createUser($userAttributes);
             return $this->goHome();
         }
-
-        $vkUser = new VkUser();
-        $vkUser->createUser($userAttributes);
 
         return $this->goHome();
     }
