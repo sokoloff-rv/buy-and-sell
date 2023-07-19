@@ -46,7 +46,7 @@ $this->beginPage();
                 <div class="search__close-btn"></div>
             </form>
             <a class="error__logo logo" href="main.html">
-                <img src="img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
+                <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
         </section>
     </main>
