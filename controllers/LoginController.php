@@ -50,13 +50,11 @@ class LoginController extends Controller
             $foundUser->vk_id = $userAttributes['user_id'];
             $foundUser->save();
             Yii::$app->user->login($foundUser);
-            return $this->goHome();
         } else {
             $vkUser = new VkUser();
             $vkUser->createUser($userAttributes);
-            return $this->goHome();
         }
-
+        
         return $this->goHome();
     }
 }
