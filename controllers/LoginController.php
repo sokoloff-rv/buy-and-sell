@@ -5,7 +5,6 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\User;
-use app\models\VkUser;
 use app\models\LoginForm;
 
 class LoginController extends Controller
@@ -51,10 +50,10 @@ class LoginController extends Controller
             $foundUser->save();
             Yii::$app->user->login($foundUser);
         } else {
-            $vkUser = new VkUser();
-            $vkUser->createUser($userAttributes);
+            $newUser = new User();
+            $newUser->createUserFromVK($userAttributes);
         }
-        
+
         return $this->goHome();
     }
 }
