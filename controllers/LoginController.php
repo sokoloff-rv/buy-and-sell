@@ -40,14 +40,25 @@ class LoginController extends Controller
     public function actionVkAuth()
     {
         $client = Yii::$app->authClientCollection->getClient("vkontakte");
-        $code = Yii::$app->request->get('code');
+
+        $code = Yii::$app->request->get('code');        
         $accessToken = $client->fetchAccessToken($code);
+        if (!$accessToken) {
+            throw new \Exception('Не удалось получить токен доступа от VK.');
+        }
+
         $userAttributes = $client->getUserAttributes();
+        if (!$userAttributes) {
+            throw new \Exception('Не удалось получить атрибуты пользователя от VK.');
+        }
 
         $foundUser = User::findOne(['email' => $userAttributes['email']]);
         if ($foundUser) {
             $foundUser->vk_id = $userAttributes['user_id'];
-            $foundUser->save();
+            if (!$foundUser->save()) {
+                throw new \Exception('Не удалось сохранить пользователя.');
+            }
+            
             Yii::$app->user->login($foundUser);
         } else {
             $newUser = new User();
