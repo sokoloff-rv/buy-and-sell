@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\User;
+use app\models\VkUser;
 use app\models\LoginForm;
 
 class LoginController extends Controller
@@ -29,5 +30,31 @@ class LoginController extends Controller
         return $this->render('index', [
             'model' => $model,
         ]);
+    }
+
+    public function actionVk()
+    {
+        $url = Yii::$app->authClientCollection->getClient("vkontakte")->buildAuthUrl();
+        Yii::$app->getResponse()->redirect($url);
+    }
+
+    public function actionVkAuth()
+    {
+        $client = Yii::$app->authClientCollection->getClient("vkontakte");
+        $code = Yii::$app->request->get('code');
+
+        $accessToken = $client->fetchAccessToken($code);
+        $userAttributes = $client->getUserAttributes();
+
+        $foundUser = User::findOne(['vk_id' => $userAttributes['user_id']]);
+        if ($foundUser) {
+            Yii::$app->user->login($foundUser);
+            return $this->goHome();
+        }
+
+        $vkUser = new VkUser();
+        $vkUser->createUser($userAttributes);
+
+        return $this->goHome();
     }
 }

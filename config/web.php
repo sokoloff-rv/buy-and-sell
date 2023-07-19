@@ -52,6 +52,18 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => '51707493',
+                    'clientSecret' => 'JBfsW4lYyz8WuB7myhMT',
+                    'returnUrl' => 'http://94214-kupi-prodai-1/login/vkauth',
+                    'scope' => 'email',
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
