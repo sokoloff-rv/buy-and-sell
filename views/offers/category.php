@@ -5,4 +5,4 @@
 $this->title = 'Категория';
 ?>
 
-<h1>Категория</h1>
+<?= $this->render('../partials/_categories') ?>
