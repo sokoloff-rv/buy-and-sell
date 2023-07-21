@@ -15,9 +15,9 @@ $currentCategoryId = Yii::$app->request->get('id');
             <li class="categories-list__item">
                 <?php
                 $isActive = $category->id == $currentCategoryId;
-                $tileClass = $isActive ? 'category-tile category-tile--active' : 'category-tile category-tile--default';
+                $tileClass = $isActive ? 'category-tile--active' : 'category-tile--default';
                 ?>
-                <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="<?= $tileClass ?>">
+                <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="category-tile <?= $tileClass ?>">
                     <span class="category-tile__image">
                         <?= Html::img($category->image, ['srcset' => $category->image . ' 2x', 'alt' => 'Иконка категории']) ?>
                     </span>
