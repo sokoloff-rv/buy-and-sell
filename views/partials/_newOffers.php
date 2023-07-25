@@ -22,7 +22,7 @@ $offers = Offer::find()->orderBy(['created_at' => SORT_DESC])->limit(8)->all();
                             <?= Html::img($offer->images[0]->image_path, ['srcset' => $offer->images[0]->image_path . ' 2x', 'alt' => 'Изображение товара']) ?>
                         </div>
                         <div class="ticket-card__info">
-                            <span class="ticket-card__label"><?= Html::encode($offer->type) ?></span>
+                            <span class="ticket-card__label"><?= Html::encode($offer->label) ?></span>
                             <div class="ticket-card__categories">
                                 <?php foreach ($offer->categories as $category) : ?>
                                     <?= Html::a(Html::encode($category->name), ['offers/category', 'id' => $category->id]) ?>
@@ -33,7 +33,7 @@ $offers = Offer::find()->orderBy(['created_at' => SORT_DESC])->limit(8)->all();
                                     <?= Html::a(Html::encode($offer->title), ['offers/view', 'id' => $offer->id]) ?>
                                 </h3>
                                 <p class="ticket-card__price">
-                                    <span class="js-sum"><?= Html::encode($offer->price) ?></span> ₽
+                                    <span class="js-sum"><?= Html::encode(round($offer->price, 0)) ?></span> ₽
                                 </p>
                             </div>
                             <div class="ticket-card__desc">
