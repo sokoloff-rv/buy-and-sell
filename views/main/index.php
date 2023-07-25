@@ -6,3 +6,4 @@ $this->title = 'Главная страница';
 ?>
 
 <?= $this->render('../partials/_categories') ?>
+<?= $this->render('../partials/_newOffers') ?>
