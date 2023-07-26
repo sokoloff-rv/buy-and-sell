@@ -4,7 +4,7 @@ use app\models\Offer;
 
 $offers = Offer::getMostDiscussed();
 
-if (count($offers) > 0) :
+if (count($offers)) :
 ?>
 
 <section class="tickets-list">
