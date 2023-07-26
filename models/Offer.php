@@ -109,4 +109,15 @@ class Offer extends \yii\db\ActiveRecord
     {
         return $this->type === 'sell' ? 'Продам' : 'Куплю';
     }
+
+    public static function getMostDiscussed($limit = 5)
+    {
+        $offers = self::find()->with('comments')->all();
+
+        usort($offers, function ($a, $b) {
+            return count($b->comments) <=> count($a->comments);
+        });
+
+        return array_slice($offers, 0, $limit);
+    }
 }

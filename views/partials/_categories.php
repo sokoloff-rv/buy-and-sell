@@ -6,7 +6,6 @@ use app\models\Category;
 
 $categories = Category::find()->all();
 $currentCategoryId = Yii::$app->request->get('id');
-
 ?>
 
 <section class="categories-list">
