@@ -17,7 +17,7 @@ use yii\helpers\Html;
             </div>
             <div class="ticket-card__header">
                 <h3 class="ticket-card__title">
-                    <?= Html::a(Html::encode($offer->title), ['offers', 'id' => $offer->id]) ?>
+                    <?= Html::a(Html::encode($offer->title), ['/offers', 'id' => $offer->id]) ?>
                 </h3>
                 <p class="ticket-card__price">
                     <span class="js-sum"><?= Html::encode(round($offer->price, 0)) ?></span> ₽
