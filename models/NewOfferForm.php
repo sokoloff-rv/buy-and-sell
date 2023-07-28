@@ -22,7 +22,7 @@ class NewOfferForm extends Model
             [['description'], 'string', 'message' => 'Описание должно быть строкой.'],
             [['price'], 'number', 'message' => 'Цена должна быть числом.'],
             [['type'], 'string', 'max' => 255],
-            [['category_id'], 'integer'],
+            [['category_id'], 'each', 'rule' => ['integer']],
             [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4, 'uploadRequired' => 'Изображение обязательно для загрузки.'],
         ];
     }

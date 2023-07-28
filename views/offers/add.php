@@ -45,11 +45,12 @@ $this->title = 'Новая публикация';
                 </div>
 
                 <div class="ticket-form__row">
-                    <?= $form->field($model, 'category_id', [
+                    <?= $form->field($model, 'category_id[]', [
                         'template' => "{input}\n{hint}\n{error}"
                     ])->dropDownList(
                         ArrayHelper::map(Category::find()->all(), 'id', 'name'),
                         [
+                            'multiple' => true,
                             'prompt' => 'Выбрать категорию публикации',
                             'class' => 'form__select js-multiple-select',
                             'data-label' => 'Выбрать категорию публикации',
