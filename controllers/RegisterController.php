@@ -12,13 +12,13 @@ class RegisterController extends Controller
 {
     public function actionIndex()
     {
-        $model = new RegisterForm();
+        $registerForm = new RegisterForm();
         $user = new User();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $user->avatar = UploadedFile::getInstance($model, 'avatar');
+        if ($registerForm->load(Yii::$app->request->post())) {
+            $user->avatar = UploadedFile::getInstance($registerForm, 'avatar');
 
-            if ($model->validate()) {
+            if ($registerForm->validate()) {
                 if ($user->avatar) {
                     $uniqueFileName = uniqid() . '_' . $user->avatar->baseName . '.' . $user->avatar->extension;
                     $filePath = 'uploads/' . $uniqueFileName;
@@ -26,9 +26,9 @@ class RegisterController extends Controller
                     $user->avatar = $filePath;
                 }
 
-                $user->name = $model->name;
-                $user->email = $model->email;
-                $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
+                $user->name = $registerForm->name;
+                $user->email = $registerForm->email;
+                $user->password = Yii::$app->getSecurity()->generatePasswordHash($registerForm->password);
                 $user->created_at = date('Y-m-d H:i:s');
                 $user->updated_at = date('Y-m-d H:i:s');
 
@@ -41,7 +41,7 @@ class RegisterController extends Controller
         }
 
         return $this->render('index', [
-            'model' => $model,
+            'registerForm' => $registerForm,
         ]);
     }
 }

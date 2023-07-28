@@ -11,15 +11,15 @@ class LoginController extends Controller
 {
     public function actionIndex()
     {
-        $model = new LoginForm();
+        $loginForm = new LoginForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $user = User::findOne(['email' => $model->email]);
+        if ($loginForm->load(Yii::$app->request->post()) && $loginForm->validate()) {
+            $user = User::findOne(['email' => $loginForm->email]);
 
             if (!$user) {
-                $model->addError('email', 'Такой пользователь не найден.');
-            } elseif (!Yii::$app->getSecurity()->validatePassword($model->password, $user->password)) {
-                $model->addError('password', 'Введен неверный пароль.');
+                $loginForm->addError('email', 'Такой пользователь не найден.');
+            } elseif (!Yii::$app->getSecurity()->validatePassword($loginForm->password, $user->password)) {
+                $loginForm->addError('password', 'Введен неверный пароль.');
             } else {
                 Yii::$app->user->login($user);
                 return $this->goHome();
@@ -27,7 +27,7 @@ class LoginController extends Controller
         }
 
         return $this->render('index', [
-            'model' => $model,
+            'loginForm' => $loginForm,
         ]);
     }
 

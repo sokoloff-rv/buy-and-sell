@@ -15,13 +15,13 @@ $this->title = 'Авторизация';
         <?= Html::a('Регистрация', ['/register'], ['class' => 'login__link']) ?>
         <h2>Вход</h2>
     </div>
-    <?= $form->field($model, 'email', [
+    <?= $form->field($loginForm, 'email', [
         'template' => '<div class="form__field login__field">{input}{label}{error}</div>',
         'inputOptions' => ['class' => 'js-field', 'id' => 'user-email'],
         'labelOptions' => ['for' => 'user-email'],
     ])->textInput()->label('Эл. почта') ?>
 
-    <?= $form->field($model, 'password', [
+    <?= $form->field($loginForm, 'password', [
         'template' => '<div class="form__field login__field">{input}{label}{error}</div>',
         'inputOptions' => ['class' => 'js-field', 'id' => 'user-password'],
         'labelOptions' => ['for' => 'user-password'],

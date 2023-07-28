@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\RegisterForm */
+/* @var $registerForm app\models\RegisterForm */
 /* @var $form ActiveForm */
 
 $this->title = 'Регистрация';
@@ -21,29 +21,29 @@ $this->title = 'Регистрация';
         <div class="sign-up__avatar-container js-preview-container">
             <div class="sign-up__avatar js-preview"></div>
             <div class="sign-up__field-avatar">
-                <?= $form->field($model, 'avatar')->fileInput(['class' => 'visually-hidden js-file-field', 'id' => 'avatar'])->label(false) ?>
+                <?= $form->field($registerForm, 'avatar')->fileInput(['class' => 'visually-hidden js-file-field', 'id' => 'avatar'])->label(false) ?>
                 <label for="avatar">
                     <span class="sign-up__text-upload">Загрузить аватар…</span>
                     <span class="sign-up__text-another">Загрузить другой аватар…</span>
                 </label>
             </div>
         </div>
-        <?= $form->field($model, 'name', [
+        <?= $form->field($registerForm, 'name', [
             'template' => '<div class="form__field sign-up__field">{input}{label}{error}</div>',
             'inputOptions' => ['class' => 'js-field', 'id' => 'user-name'],
             'labelOptions' => ['for' => 'user-name'],
         ])->textInput()->label('Имя и фамилия') ?>
-        <?= $form->field($model, 'email', [
+        <?= $form->field($registerForm, 'email', [
             'template' => '<div class="form__field sign-up__field">{input}{label}{error}</div>',
             'inputOptions' => ['class' => 'js-field', 'id' => 'user-email'],
             'labelOptions' => ['for' => 'user-email'],
         ])->textInput()->label('Эл. почта') ?>
-        <?= $form->field($model, 'password', [
+        <?= $form->field($registerForm, 'password', [
             'template' => '<div class="form__field sign-up__field">{input}{label}{error}</div>',
             'inputOptions' => ['class' => 'js-field', 'id' => 'user-password'],
             'labelOptions' => ['for' => 'user-password'],
         ])->passwordInput()->label('Пароль') ?>
-        <?= $form->field($model, 'password_repeat', [
+        <?= $form->field($registerForm, 'password_repeat', [
             'template' => '<div class="form__field sign-up__field">{input}{label}{error}</div>',
             'inputOptions' => ['class' => 'js-field', 'id' => 'user-password-again'],
             'labelOptions' => ['for' => 'user-password-again'],
