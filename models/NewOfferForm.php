@@ -5,25 +5,27 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
+use app\models\Offer;
+use app\models\Image;
 
 class NewOfferForm extends Model
 {
-    public $title;
-    public $description;
-    public $price;
-    public $type;
-    public $category_id;
-    public $imageFiles;
+    public string $title = '';
+    public string $description = '';
+    public int $price = 0;
+    public string $type = '';
+    public array $category_id = [];
+    public array $imageFiles = [];
 
     public function rules()
     {
         return [
-            [['title', 'description', 'price', 'type', 'category_id'], 'required'],
+            [['title', 'description', 'price', 'type', 'category_id', 'imageFiles'], 'required'],
             [['description'], 'string'],
             [['price'], 'number'],
             [['type'], 'string', 'max' => 255],
             [['category_id'], 'each', 'rule' => ['integer']],
-            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
+            [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
         ];
     }
 
@@ -37,6 +39,40 @@ class NewOfferForm extends Model
             'category_id' => 'Категория',
             'imageFiles' => 'Изображение',
         ];
+    }
+
+    public function newOffer(): Offer
+    {
+        $offer = new Offer;
+
+        $offer->title = $this->title;
+        $offer->description = $this->description;
+        $offer->price = $this->price;
+        $offer->type = $this->type;
+        $offer->user_id = Yii::$app->user->getId();
+
+        return $offer;
+    }
+
+    public function createOffer(): int|bool
+    {
+        $imageFiles = UploadedFile::getInstances($this, 'imageFiles');
+
+        if ($this->validate()) {
+            $newOffer = $this->newOffer();
+            $newOffer->save(false);
+            if ($imageFiles) {
+                foreach ($imageFiles as $file) {
+                    $newFileName = uniqid('upload') . '.' . $file->getExtension();
+                    $file->saveAs('@webroot/uploads/' . $newFileName);
+                    $imagePath = '/uploads/' . $newFileName;
+                    Image::saveImage($imagePath, $newOffer->id);
+                }
+            }
+            return $newOffer->id;
+        }
+
+        return false;
     }
     
 }

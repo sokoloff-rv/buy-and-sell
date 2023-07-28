@@ -57,4 +57,12 @@ class Image extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Offer::class, ['id' => 'offer_id']);
     }
+
+    public static function saveImage(string $imagePath, int $offerId): void
+    {
+        $newImage = new self;
+        $newImage->image_path = $imagePath;
+        $newImage->offer_id = $offerId;
+        $newImage->save(false);
+    }
 }

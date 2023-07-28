@@ -31,10 +31,19 @@ class OffersController extends AccessController
 
     public function actionAdd()
     {
-        $model = new NewOfferForm();
+        $newOfferForm = new NewOfferForm();        
+        if (Yii::$app->request->getIsPost()) {
+            $newOfferForm->load(Yii::$app->request->post());
+            $newOfferId = $newOfferForm->createOffer();
+            if ($newOfferId) {
+                return Yii::$app->response->redirect([
+                    "/offers"
+                ]);
+            }
+        }
 
         return $this->render('add', [
-            'model' => $model,
+            'newOfferForm' => $newOfferForm,
         ]);
     }
 

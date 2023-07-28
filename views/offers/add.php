@@ -19,8 +19,8 @@ $this->title = 'Новая публикация';
             <div class="ticket-form__avatar-container js-preview-container">
                 <div class="ticket-form__avatar js-preview"></div>
                 <div class="ticket-form__field-avatar">
-                    <?= $form->field($model, 'imageFiles[]', ['template' => "{input}\n{label}\n{hint}\n{error}"])
-                        ->fileInput(['id' => 'avatar', 'class' => 'visually-hidden js-file-field'])
+                    <?= $form->field($newOfferForm, 'imageFiles[]', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                        ->fileInput(['id' => 'avatar', 'class' => 'visually-hidden js-file-field', 'multiple' => true])
                         ->label('<span class="ticket-form__text-upload">Загрузить фото…</span><span class="ticket-form__text-another">Загрузить другое фото…</span>') ?>
                 </div>
             </div>
@@ -28,7 +28,7 @@ $this->title = 'Новая публикация';
             <div class="ticket-form__content">
                 <div class="ticket-form__row">
                     <div class="form__field">
-                        <?= $form->field($model, 'title', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                        <?= $form->field($newOfferForm, 'title', ['template' => "{input}\n{label}\n{hint}\n{error}"])
                             ->textInput(['id' => 'ticket-name', 'class' => 'js-field', 'required' => true])
                             ->label('Название') ?>
                         <span>Обязательное поле</span>
@@ -37,7 +37,7 @@ $this->title = 'Новая публикация';
 
                 <div class="ticket-form__row">
                     <div class="form__field">
-                        <?= $form->field($model, 'description', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                        <?= $form->field($newOfferForm, 'description', ['template' => "{input}\n{label}\n{hint}\n{error}"])
                             ->textarea(['id' => 'comment-field', 'class' => 'js-field', 'cols' => 30, 'rows' => 10])
                             ->label('Описание') ?>
                         <span>Обязательное поле</span>
@@ -45,7 +45,7 @@ $this->title = 'Новая публикация';
                 </div>
 
                 <div class="ticket-form__row">
-                    <?= $form->field($model, 'category_id[]', [
+                    <?= $form->field($newOfferForm, 'category_id[]', [
                         'template' => "{input}\n{hint}\n{error}"
                     ])->dropDownList(
                         ArrayHelper::map(Category::find()->all(), 'id', 'name'),
@@ -61,13 +61,13 @@ $this->title = 'Новая публикация';
 
                 <div class="ticket-form__row">
                     <div class="form__field form__field--price">
-                        <?= $form->field($model, 'price', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                        <?= $form->field($newOfferForm, 'price', ['template' => "{input}\n{label}\n{hint}\n{error}"])
                             ->input('number', ['id' => 'price-field', 'class' => 'js-field js-price', 'min' => 1, 'required' => true])
                             ->label('Цена') ?>
                         <span>Обязательное поле</span>
                     </div>
 
-                    <?= $form->field($model, 'type', [
+                    <?= $form->field($newOfferForm, 'type', [
                         'template' => "{input}\n{hint}\n{error}"
                     ])->radioList(
                         [Offer::TYPE_BUY => 'Куплю', Offer::TYPE_SELL => 'Продам'],
