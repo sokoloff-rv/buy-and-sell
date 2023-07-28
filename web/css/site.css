@@ -1572,7 +1572,6 @@ input:checked+.switch__button {
 }
 
 .header__avatar {
-    display: none;
     width: 58px;
     height: 58px;
     margin-left: auto

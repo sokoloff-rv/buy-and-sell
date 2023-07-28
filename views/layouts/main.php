@@ -7,8 +7,7 @@ use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+use app\models\User;
 
 AppAsset::register($this);
 
@@ -51,10 +50,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                 <div class="search__icon"></div>
                 <div class="search__close-btn"></div>
             </form>
-            <a class="header__avatar avatar" href="#">
-                <img src="/img/avatar.jpg" srcset="img/avatar@2x.jpg 2x" alt="Аватар пользователя">
-            </a>
-            <a class="header__input" href="/register">Вход и регистрация</a>
+            <?php if (Yii::$app->user->isGuest) : ?>
+                <a class="header__input" href="/register">Вход и регистрация</a>
+            <?php else : ?>
+                <a class="header__avatar avatar" href="#">
+                    <img src="<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
+                </a>
+            <?php endif; ?>
         </div>
     </header>
 

@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use Yii;
+use  yii\web\ForbiddenHttpException;
+
 class OffersController extends AccessController
 {
     public function getAccessRules(): array
