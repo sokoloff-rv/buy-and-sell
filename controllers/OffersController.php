@@ -48,15 +48,6 @@ class OffersController extends AccessController
         return $this->render('category');
     }
 
-    public function actionCreateOffer()
-    {
-        if (Yii::$app->user->can('createOffer')) {
-            // создание объявления
-        } else {
-            throw new ForbiddenHttpException('У вас нет прав для выполнения этого действия.');
-        }
-    }
-
     public function actionEditOffer()
     {
         if (Yii::$app->user->can('editOffer')) {
