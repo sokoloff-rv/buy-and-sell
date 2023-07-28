@@ -27,15 +27,5 @@ class NewOfferForm extends Model
         ];
     }
 
-    public function upload()
-    {
-        if ($this->validate()) { 
-            foreach ($this->imageFiles as $file) {
-                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+    
 }
