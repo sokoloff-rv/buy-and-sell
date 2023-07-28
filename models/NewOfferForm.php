@@ -27,5 +27,16 @@ class NewOfferForm extends Model
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'title' => 'Заголовок',
+            'description' => 'Описание',
+            'price' => 'Цена',
+            'type' => 'Тип объявления',
+            'category_id' => 'Категория',
+            'imageFiles' => 'Изображение',
+        ];
+    }
     
 }
