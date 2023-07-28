@@ -18,12 +18,12 @@ class NewOfferForm extends Model
     public function rules()
     {
         return [
-            [['title', 'description', 'price', 'type', 'category_id'], 'required', 'message' => 'Нужно заполнить.'],
-            [['description'], 'string', 'message' => 'Описание должно быть строкой.'],
-            [['price'], 'number', 'message' => 'Цена должна быть числом.'],
+            [['title', 'description', 'price', 'type', 'category_id'], 'required'],
+            [['description'], 'string'],
+            [['price'], 'number'],
             [['type'], 'string', 'max' => 255],
             [['category_id'], 'each', 'rule' => ['integer']],
-            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4, 'uploadRequired' => 'Изображение обязательно для загрузки.'],
+            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
         ];
     }
 

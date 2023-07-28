@@ -16,8 +16,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['email', 'password'], 'required', 'message' => 'Логин и пароль введены неверно.'],
-            ['email', 'email', 'message' => 'Некорректный адрес эл. почты.'],
+            [['email', 'password'], 'required'],
+            ['email', 'email'],
         ];
     }
 

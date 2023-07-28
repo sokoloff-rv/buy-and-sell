@@ -19,13 +19,13 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'password_repeat'], 'required', 'message' => 'Поле не может быть пустым.'],
-            [['name'], 'match', 'pattern' => '/^[a-zA-Zа-яА-ЯёЁ\s\-]*$/', 'message' => 'Имя и фамилия заполнены некорректно.'],
+            [['name', 'email', 'password', 'password_repeat'], 'required'],
+            [['name'], 'match', 'pattern' => '/^[^\d!$%^&*()_+|~=`{}\[\]:";\'<>?,.\/]*$/'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Этот адрес электронной почты уже занят.'],
+            ['email', 'unique', 'targetClass' => '\app\models\User'],
             ['password', 'string', 'min' => 6],
-            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => 'Пароли не совпадают.'],
-            ['avatar', 'file', 'extensions' => 'png, jpg, jpeg, gif'],
+            ['password_repeat', 'compare', 'compareAttribute' => 'password'],
+            ['avatar', 'file', 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
