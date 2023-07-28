@@ -23,6 +23,9 @@ use Yii;
  */
 class Offer extends \yii\db\ActiveRecord
 {
+    const TYPE_SELL = 'sell';
+    const TYPE_BUY = 'buy';
+
     /**
      * {@inheritdoc}
      */
@@ -107,7 +110,7 @@ class Offer extends \yii\db\ActiveRecord
 
     public function getLabel()
     {
-        return $this->type === 'sell' ? 'Продам' : 'Куплю';
+        return $this->type === self::TYPE_SELL ? 'Продам' : 'Куплю';
     }
 
     public static function getMostDiscussed($limit = 4)

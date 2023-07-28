@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\Offer;
 use app\models\Category;
 use yii\helpers\ArrayHelper;
 
@@ -68,7 +69,7 @@ $this->title = 'Новая публикация';
                     <?= $form->field($model, 'type', [
                         'template' => "{input}\n{hint}\n{error}"
                     ])->radioList(
-                        ['buy' => 'Куплю', 'sell' => 'Продам'],
+                        [Offer::TYPE_BUY => 'Куплю', Offer::TYPE_SELL => 'Продам'],
                         [
                             'item' => function ($index, $label, $name, $checked, $value) {
                                 $check = $checked ? ' checked="checked"' : '';
