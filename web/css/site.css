@@ -2042,6 +2042,7 @@ textarea:invalid {
     appearance: none
 }
 
+.field-category-field,
 .form .selectr-container {
     width: 100%
 }

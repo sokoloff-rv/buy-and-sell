@@ -54,7 +54,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                 <a class="header__input" href="/register">Вход и регистрация</a>
             <?php else : ?>
                 <a class="header__avatar avatar" href="#">
-                    <img src="<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
+                    <img src="/<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
                 </a>
             <?php endif; ?>
         </div>

@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use Yii;
-use  yii\web\ForbiddenHttpException;
+use yii\web\ForbiddenHttpException;
+use app\models\NewOfferForm;
 
 class OffersController extends AccessController
 {
@@ -16,7 +17,7 @@ class OffersController extends AccessController
                 'roles' => ['?', '@'],
             ],
             [
-                'actions' => ['new', 'edit'],
+                'actions' => ['add', 'edit'],
                 'allow' => true,
                 'roles' => ['@'],
             ],
@@ -30,7 +31,11 @@ class OffersController extends AccessController
 
     public function actionAdd()
     {
-        return $this->render('add');
+        $model = new NewOfferForm();
+
+        return $this->render('add', [
+            'model' => $model,
+        ]);
     }
 
     public function actionEdit()
