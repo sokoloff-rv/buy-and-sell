@@ -61,6 +61,12 @@ class NewOfferForm extends Model
         if ($this->validate()) {
             $newOffer = $this->newOffer();
             $newOffer->save(false);
+            foreach ($this->category_id as $categoryId) {
+                $category = Category::findOne($categoryId);
+                if ($category) {
+                    $newOffer->link('categories', $category);
+                }
+            }
             if ($imageFiles) {
                 foreach ($imageFiles as $file) {
                     $newFileName = uniqid('upload') . '.' . $file->getExtension();
