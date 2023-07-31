@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use app\models\NewOfferForm;
+use app\models\Offer;
 
 class OffersController extends AccessController
 {
@@ -24,9 +26,17 @@ class OffersController extends AccessController
         ];
     }
 
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        return $this->render('index');
+        $offer = Offer::findOne($id);
+    
+        if ($offer === null) {
+            throw new NotFoundHttpException('Объявление не найдено.');
+        }
+    
+        return $this->render('index', [
+            'offer' => $offer,
+        ]);
     }
 
     public function actionAdd()
