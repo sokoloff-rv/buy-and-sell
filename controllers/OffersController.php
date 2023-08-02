@@ -62,26 +62,13 @@ class OffersController extends AccessController
         return $this->render('edit');
     }
 
+    public function actionDelete()
+    {
+        
+    }
+
     public function actionCategory()
     {
         return $this->render('category');
-    }
-
-    public function actionEditOffer()
-    {
-        if (Yii::$app->user->can('editOffer')) {
-            // редактирование объявления
-        } else {
-            throw new ForbiddenHttpException('У вас нет прав для выполнения этого действия.');
-        }
-    }
-
-    public function actionDeleteOffer()
-    {
-        if (Yii::$app->user->can('deleteOffer')) {
-            // удаление объявления
-        } else {
-            throw new ForbiddenHttpException('У вас нет прав для выполнения этого действия.');
-        }
     }
 }
