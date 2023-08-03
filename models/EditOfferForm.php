@@ -41,9 +41,43 @@ class EditOfferForm extends Model
         ];
     }
 
-    public function updateOffer(): int|bool
+    public function updateOffer(int $offerId): bool
     {
-        return true;
+        $offer = Offer::findOne($offerId);
+
+        if (!$offer) {
+            return false;
+        }
+
+        if ($this->validate()) {
+            $offer->title = $this->title;
+            $offer->description = $this->description;
+            $offer->price = $this->price;
+            $offer->type = $this->type;
+            $offer->save(false);
+
+            $offer->unlinkAll('categories', true);
+            foreach ($this->category_id as $categoryId) {
+                $category = Category::findOne($categoryId);
+                if ($category) {
+                    $offer->link('categories', $category);
+                }
+            }
+
+            $imageFiles = UploadedFile::getInstances($this, 'imageFiles');
+            if ($imageFiles && !empty($imageFiles)) {
+                Image::deleteAll(['offer_id' => $offerId]);
+                foreach ($imageFiles as $file) {
+                    $newFileName = uniqid('upload') . '.' . $file->getExtension();
+                    $file->saveAs('@webroot/uploads/' . $newFileName);
+                    $imagePath = '/uploads/' . $newFileName;
+                    Image::saveImage($imagePath, $offer->id);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
-    
 }

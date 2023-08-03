@@ -69,7 +69,7 @@ class OffersController extends AccessController
         $editOfferForm = new EditOfferForm();
         if (Yii::$app->request->getIsPost()) {
             $editOfferForm->load(Yii::$app->request->post());
-            if ($editOfferForm->updateOffer($offer)) {
+            if ($editOfferForm->updateOffer($offer->id)) {
                 return Yii::$app->response->redirect([
                     "/offers?id=$id"
                 ]);
