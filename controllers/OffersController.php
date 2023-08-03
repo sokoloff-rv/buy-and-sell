@@ -6,7 +6,9 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use app\models\NewOfferForm;
+use app\models\EditOfferForm;
 use app\models\Offer;
+use yii\helpers\ArrayHelper;
 
 class OffersController extends AccessController
 {
@@ -29,11 +31,11 @@ class OffersController extends AccessController
     public function actionIndex($id)
     {
         $offer = Offer::findOne($id);
-    
+
         if ($offer === null) {
             throw new NotFoundHttpException('Объявление не найдено.');
         }
-    
+
         return $this->render('index', [
             'offer' => $offer,
         ]);
@@ -41,13 +43,13 @@ class OffersController extends AccessController
 
     public function actionAdd()
     {
-        $newOfferForm = new NewOfferForm();        
+        $newOfferForm = new NewOfferForm();
         if (Yii::$app->request->getIsPost()) {
             $newOfferForm->load(Yii::$app->request->post());
             $newOfferId = $newOfferForm->createOffer();
             if ($newOfferId) {
                 return Yii::$app->response->redirect([
-                    "/offers"
+                    "/offers?id=$newOfferId"
                 ]);
             }
         }
@@ -57,14 +59,32 @@ class OffersController extends AccessController
         ]);
     }
 
-    public function actionEdit()
+    public function actionEdit($id)
     {
-        return $this->render('edit');
+        $offer = Offer::findOne($id);
+        if ($offer === null) {
+            throw new NotFoundHttpException('Объявление не найдено.');
+        }
+
+        $editOfferForm = new EditOfferForm();
+        if (Yii::$app->request->getIsPost()) {
+            $editOfferForm->load(Yii::$app->request->post());
+            if ($editOfferForm->updateOffer($offer)) {
+                return Yii::$app->response->redirect([
+                    "/offers?id=$id"
+                ]);
+            }
+        }
+
+        return $this->render('edit', [
+            'offer' => $offer,
+            'editOfferForm' => $editOfferForm,
+        ]);
     }
+
 
     public function actionDelete()
     {
-        
     }
 
     public function actionCategory()

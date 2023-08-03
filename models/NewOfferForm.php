@@ -21,9 +21,9 @@ class NewOfferForm extends Model
     {
         return [
             [['title', 'description', 'price', 'type', 'category_id', 'imageFiles'], 'required'],
-            [['description'], 'string'],
-            [['price'], 'number'],
-            [['type'], 'string', 'max' => 255],
+            [['title'], 'string', 'min' => 10, 'max' => 100],
+            [['description'], 'string', 'min' => 50, 'max' => 1000],
+            [['price'], 'number', 'min' => 100],
             [['category_id'], 'each', 'rule' => ['integer']],
             [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
         ];
