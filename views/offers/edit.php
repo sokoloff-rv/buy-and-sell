@@ -7,6 +7,7 @@ use app\models\Category;
 use yii\helpers\ArrayHelper;
 
 $this->title = 'Редактирование объявления';
+$offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
 ?>
 
 <section class="ticket-form">
@@ -16,8 +17,10 @@ $this->title = 'Редактирование объявления';
 
             <?php $form = ActiveForm::begin(['options' => ['class' => 'ticket-form__form form', 'enctype' => 'multipart/form-data', 'autocomplete' => 'off']]); ?>
 
-            <div class="ticket-form__avatar-container js-preview-container">
-                <div class="ticket-form__avatar js-preview"></div>
+            <div class="ticket-form__avatar-container js-preview-container uploaded">
+                <div class="ticket-form__avatar js-preview">
+                    <img src="<?= $offer->images[0]->image_path ?>" alt="">
+                </div>
                 <div class="ticket-form__field-avatar">
                     <?= $form->field($editOfferForm, 'imageFiles[]', ['template' => "{input}\n{label}\n{hint}\n{error}"])
                         ->fileInput(['id' => 'avatar', 'class' => 'visually-hidden js-file-field', 'multiple' => true])
@@ -54,7 +57,8 @@ $this->title = 'Редактирование объявления';
                             'prompt' => 'Выбрать категорию публикации',
                             'class' => 'form__select js-multiple-select',
                             'data-label' => 'Выбрать категорию публикации',
-                            'id' => 'category-field'
+                            'id' => 'category-field',
+                            'options' => array_combine($offerCategories, array_fill(0, count($offerCategories), ['selected' => true]))
                         ]
                     ) ?>
                 </div>
