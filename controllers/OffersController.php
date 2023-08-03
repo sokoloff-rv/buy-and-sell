@@ -21,7 +21,7 @@ class OffersController extends AccessController
                 'roles' => ['?', '@'],
             ],
             [
-                'actions' => ['add', 'edit'],
+                'actions' => ['add', 'edit', 'delete'],
                 'allow' => true,
                 'roles' => ['@'],
             ],
@@ -83,8 +83,15 @@ class OffersController extends AccessController
     }
 
 
-    public function actionDelete()
+    public function actionDelete($id)
     {
+        $offer = Offer::findOne($id);
+        if (!$offer) {
+            throw new NotFoundHttpException('Объявление не найдено.');
+        }
+        $offer->delete();
+
+        return $this->goHome();
     }
 
     public function actionCategory()
