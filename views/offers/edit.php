@@ -90,7 +90,7 @@ $this->title = 'Редактирование объявления';
             </div>
 
             <div class="form-group">
-                <?= Html::submitButton('Сохранить', ['class' => 'form__button btn btn--medium js-button', 'disabled' => true]) ?>
+                <?= Html::submitButton('Сохранить', ['class' => 'form__button btn btn--medium js-button']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>

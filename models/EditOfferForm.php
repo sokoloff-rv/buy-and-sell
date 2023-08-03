@@ -20,8 +20,8 @@ class EditOfferForm extends Model
     public function rules()
     {
         return [
-            [['title'], 'string', 'min' => 10, 'min' => 100],
-            [['description'], 'string', 'min' => 50, 'min' => 1000],
+            [['title'], 'string', 'min' => 10, 'max' => 100],
+            [['description'], 'string', 'min' => 50, 'max' => 1000],
             [['price'], 'number', 'min' => 100],
             [['type'], 'safe'],
             [['category_id'], 'each', 'rule' => ['integer']],
