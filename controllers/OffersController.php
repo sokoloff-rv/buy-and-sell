@@ -61,9 +61,10 @@ class OffersController extends AccessController
             $newOfferForm->load(Yii::$app->request->post());
             $newOfferId = $newOfferForm->createOffer();
             if ($newOfferId) {
-                return Yii::$app->response->redirect([
-                    "/offers?id=$newOfferId"
-                ]);
+                Yii::$app->session->setFlash('success', 'Объявление успешно добавлено.');
+                return Yii::$app->response->redirect(["/offers?id=$newOfferId"]);
+            } else {
+                Yii::$app->session->setFlash('error', 'Произошла ошибка при добавлении объявления.');
             }
         }
 
@@ -83,9 +84,10 @@ class OffersController extends AccessController
         if (Yii::$app->request->getIsPost()) {
             $editOfferForm->load(Yii::$app->request->post());
             if ($editOfferForm->updateOffer($offer->id)) {
-                return Yii::$app->response->redirect([
-                    "/offers?id=$id"
-                ]);
+                Yii::$app->session->setFlash('success', 'Объявление успешно обновлено.');
+                return Yii::$app->response->redirect(["/offers?id=$id"]);
+            } else {
+                Yii::$app->session->setFlash('error', 'Произошла ошибка при обновлении объявления.');
             }
         }
 
@@ -94,7 +96,6 @@ class OffersController extends AccessController
             'editOfferForm' => $editOfferForm,
         ]);
     }
-
 
     public function actionDelete($id)
     {
