@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 $this->title = $offer->title;
 ?>
@@ -41,7 +42,7 @@ $this->title = $offer->title;
                         <li>
                             <a href="<?= Url::to(['category/view', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
-                                    <img src="<?= $category->image ?>"  alt="Иконка категории">
+                                    <img src="<?= $category->image ?>" alt="Иконка категории">
                                 </span>
                                 <span class="category-tile__label"><?= Html::encode($category->name) ?></span>
                             </a>
@@ -50,5 +51,28 @@ $this->title = $offer->title;
                 </ul>
             </div>
         </div>
+        <div class="ticket__comments">
+            <h2 class="ticket__subtitle">Коментарии</h2>
+            <div class="ticket__comment-form">
+                <?php $form = ActiveForm::begin(['options' => ['class' => 'form comment-form']]); ?>
+                <div class="comment-form__header">
+                    <a href="#" class="comment-form__avatar avatar">
+                        <img src="img/avatar.jpg" srcset="img/avatar@2x.jpg 2x" alt="Аватар пользователя">
+                    </a>
+                    <p class="comment-form__author">Вам слово</p>
+                </div>
+                <div class="comment-form__field">
+                    <div class="form__field">
+                        <?= $form->field($commentForm, 'text', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                            ->textarea(['id' => 'comment-field', 'cols' => 30, 'rows' => 10, 'class' => 'js-field'])
+                            ->label('Текст комментария') ?>
+                        <span>Обязательное поле</span>
+                    </div>
+                </div>
+                <?= Html::submitButton('Отправить', ['class' => 'comment-form__button btn btn--white js-button', 'disabled' => true]) ?>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+
     </div>
 </section>

@@ -7,6 +7,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use app\models\NewOfferForm;
 use app\models\EditOfferForm;
+use app\models\CommentForm;
 use app\models\Offer;
 use yii\helpers\ArrayHelper;
 
@@ -36,10 +37,17 @@ class OffersController extends AccessController
             throw new NotFoundHttpException('Объявление не найдено.');
         }
 
+        $commentForm = new CommentForm;
+        if (Yii::$app->request->isPost && $commentForm->load(Yii::$app->request->post()) && $commentForm->validate()) {
+            // обработка комментария
+        }
+
         return $this->render('index', [
             'offer' => $offer,
+            'commentForm' => $commentForm,
         ]);
     }
+
 
     public function actionAdd()
     {
