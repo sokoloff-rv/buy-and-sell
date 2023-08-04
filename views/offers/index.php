@@ -57,13 +57,13 @@ $this->title = $offer->title;
                 <?php $form = ActiveForm::begin(['options' => ['class' => 'form comment-form']]); ?>
                 <div class="comment-form__header">
                     <a href="#" class="comment-form__avatar avatar">
-                        <img src="img/avatar.jpg" srcset="img/avatar@2x.jpg 2x" alt="Аватар пользователя">
+                        <img src="/<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
                     </a>
                     <p class="comment-form__author">Вам слово</p>
                 </div>
                 <div class="comment-form__field">
                     <div class="form__field">
-                        <?= $form->field($commentForm, 'text', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                        <?= $form->field($newCommentForm, 'text', ['template' => "{input}\n{label}\n{hint}\n{error}"])
                             ->textarea(['id' => 'comment-field', 'cols' => 30, 'rows' => 10, 'class' => 'js-field'])
                             ->label('Текст комментария') ?>
                         <span>Обязательное поле</span>

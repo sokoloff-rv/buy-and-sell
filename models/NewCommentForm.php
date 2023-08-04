@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
-class CommentForm extends Model
+class NewCommentForm extends Model
 {
     public $text;
 
@@ -30,7 +30,6 @@ class CommentForm extends Model
         $comment->text = $this->text;
         $comment->user_id = Yii::$app->user->getId();
         $comment->offer_id = $offerId;
-        $comment->created_at = date('Y-m-d H:i:s');
 
         return $comment;
     }
