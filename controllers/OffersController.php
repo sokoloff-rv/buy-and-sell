@@ -37,9 +37,14 @@ class OffersController extends AccessController
             throw new NotFoundHttpException('Объявление не найдено.');
         }
 
-        $commentForm = new CommentForm;
-        if (Yii::$app->request->isPost && $commentForm->load(Yii::$app->request->post()) && $commentForm->validate()) {
-            // обработка комментария
+        $commentForm = new CommentForm();
+        if (Yii::$app->request->isPost && $commentForm->load(Yii::$app->request->post())) {
+            if ($commentForm->createComment($id)) {
+                Yii::$app->session->setFlash('success', 'Комментарий успешно добавлен.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Произошла ошибка при добавлении комментария.');
+            }
+            return $this->refresh();
         }
 
         return $this->render('index', [
