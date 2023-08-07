@@ -72,7 +72,27 @@ $this->title = $offer->title;
                 <?= Html::submitButton('Отправить', ['class' => 'comment-form__button btn btn--white js-button', 'disabled' => true]) ?>
                 <?php ActiveForm::end(); ?>
             </div>
+            <div class="ticket__comments-list">
+                <ul class="comments-list">
+                    <?php foreach ($comments as $comment) : ?>
+                        <li>
+                            <div class="comment-card">
+                                <div class="comment-card__header">
+                                    <a href="#" class="comment-card__avatar avatar">
+                                        <img src="<?= $comment->user->avatar ?>" alt="Аватар пользователя">
+                                    </a>
+                                    <p class="comment-card__author">
+                                        <?= $comment->user->name; ?>
+                                    </p>
+                                </div>
+                                <div class="comment-card__content">
+                                    <p><?= $comment->text; ?></p>
+                                </div>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         </div>
-
     </div>
 </section>

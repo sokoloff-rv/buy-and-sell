@@ -32,6 +32,7 @@ class OffersController extends AccessController
     public function actionIndex($id)
     {
         $offer = Offer::findOne($id);
+        $comments = $offer->comments;
 
         if ($offer === null) {
             throw new NotFoundHttpException('Объявление не найдено.');
@@ -49,6 +50,7 @@ class OffersController extends AccessController
 
         return $this->render('index', [
             'offer' => $offer,
+            'comments' => $comments,
             'newCommentForm' => $newCommentForm,
         ]);
     }
