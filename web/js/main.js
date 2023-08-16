@@ -42,7 +42,7 @@
       var footer = document.querySelector('.page-footer');
       var footerOffset = footer.getBoundingClientRect().top;
       var chatButtonHeight = 52;
-      var chatButtonHeight = 50;
+      var chatHeight = 50;
 
       if (footerOffset < window.innerHeight) {
         chatButton.style.bottom = (window.innerHeight - footerOffset + chatButtonHeight) + 'px';
