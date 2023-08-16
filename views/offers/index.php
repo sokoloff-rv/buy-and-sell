@@ -94,5 +94,30 @@ $this->title = $offer->title;
                 </ul>
             </div>
         </div>
+        <button class="chat-button" type="button" aria-label="Открыть окно чата"></button>
     </div>
+</section>
+
+<section class="chat visually-hidden">
+    <h2 class="chat__subtitle">Чат с продавцом</h2>
+    <ul class="chat__conversation">
+        <!-- Здесь будут сообщения -->
+    </ul>
+
+    <?php $form = ActiveForm::begin([
+        'options' => ['class' => 'chat__form'],
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{hint}\n{error}",
+            'options' => ['tag' => false],
+        ],
+    ]); ?>
+
+        <?= $form->field($chatForm, 'message', [
+            'labelOptions' => ['class' => 'visually-hidden'],
+            'inputOptions' => ['id' => 'chat-field', 'class' => 'chat__form-message', 'placeholder' => 'Ваше сообщение'],
+        ])->textarea()->label('Ваше сообщение в чат') ?>
+
+        <?= Html::submitButton('', ['class' => 'chat__form-button', 'aria-label' => 'Отправить сообщение в чат']) ?>
+
+    <?php ActiveForm::end(); ?>
 </section>

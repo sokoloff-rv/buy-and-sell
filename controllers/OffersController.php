@@ -6,6 +6,7 @@ use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use app\models\NewOfferForm;
+use app\models\ChatForm;
 use app\models\EditOfferForm;
 use app\models\NewCommentForm;
 use app\models\Offer;
@@ -48,9 +49,12 @@ class OffersController extends AccessController
             return $this->refresh();
         }
 
+        $chatForm = new ChatForm();
+
         return $this->render('index', [
             'offer' => $offer,
             'comments' => $comments,
+            'chatForm' => $chatForm,
             'newCommentForm' => $newCommentForm,
         ]);
     }
