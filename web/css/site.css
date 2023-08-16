@@ -2982,7 +2982,7 @@ textarea:invalid {
     cursor: pointer;
     border: 0;
     position: fixed;
-    bottom: 52px !important;
+    bottom: 52px;
     left: calc(50% + 426px);
 }
 
@@ -3005,7 +3005,7 @@ textarea:invalid {
     border-radius: 8px;
     box-shadow: -2px 3px 4px rgba(17, 33, 70, .5);
     position: fixed;
-    bottom: 50px !important;
+    bottom: 50px;
     left: calc(50% + 190px);
     z-index: 3
 }

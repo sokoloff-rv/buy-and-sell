@@ -36,22 +36,20 @@
       }
     });
 
-    var pageHeight = document.body.clientHeight;
-    var currentWindowHeight = window.innerHeight;
-    var footerHeight = pageFooter.clientHeight;
-    var lastKnownScrollPosition = 0;
-    var valueOfReachingFooter = pageHeight - currentWindowHeight - footerHeight;
-    var maxScrollPosition = pageHeight - currentWindowHeight;
-    var amendment = 0;
-    var INDENT = 49;
+    window.addEventListener('scroll', function () {
+      var chat = document.querySelector('.chat');
+      var chatButton = document.querySelector('.chat-button');
+      var footer = document.querySelector('.page-footer');
+      var footerOffset = footer.getBoundingClientRect().top;
+      var chatButtonHeight = 52;
+      var chatButtonHeight = 50;
 
-    document.addEventListener('scroll', function () {
-      lastKnownScrollPosition = window.scrollY;
-
-      if (lastKnownScrollPosition > valueOfReachingFooter) {
-        amendment = maxScrollPosition - lastKnownScrollPosition;
-        buttonToOpenChat.style.bottom = footerHeight + INDENT - amendment + 'px';
-        chat.style.bottom = footerHeight + INDENT - amendment + 'px';
+      if (footerOffset < window.innerHeight) {
+        chatButton.style.bottom = (window.innerHeight - footerOffset + chatButtonHeight) + 'px';
+        chat.style.bottom = (window.innerHeight - footerOffset + chatHeight) + 'px';
+      } else {
+        chatButton.style.bottom = chatButtonHeight + 'px';
+        chat.style.bottom = chatHeight + 'px';
       }
     });
   }
@@ -59,10 +57,10 @@
 
 'use strict';
 
-(function() {
+(function () {
   var deletEls = document.querySelectorAll('.js-delete');
   for (var i = 0; i < deletEls.length; i++) {
-    deletEls[i].addEventListener('click', function() {
+    deletEls[i].addEventListener('click', function () {
       var card = this.closest('.js-card');
       card.parentNode.removeChild(card);
 
@@ -197,16 +195,16 @@
       var ours = document.createElement('div');
       ours.className = SS.selected.className;
       SS.selected.className += ' selectr-selected--hidden';
-      SS.selected.parentNode.insertBefore(ours,SS.selected);
-      var updateOurs = function(){
+      SS.selected.parentNode.insertBefore(ours, SS.selected);
+      var updateOurs = function () {
         ours.innerText = SS.selected.innerText.trim().replace(/\n/g, ', ') || placeholder;
       };
-      Selectr.prototype.select = function(){
+      Selectr.prototype.select = function () {
         selection.apply(this, arguments);
         updateOurs();
       };
 
-      Selectr.prototype.deselect = function(){
+      Selectr.prototype.deselect = function () {
         deselection.apply(this, arguments);
         updateOurs();
       };
@@ -215,7 +213,7 @@
 
     var priceField = form.querySelector('.js-price');
     if (priceField) {
-      priceField.addEventListener('keydown', function(e) {
+      priceField.addEventListener('keydown', function (e) {
         if (window.event.keyCode >= 65 && window.event.keyCode <= 90 || window.event.keyCode === 189 || window.event.keyCode === 188) {
           e.preventDefault();
         }
