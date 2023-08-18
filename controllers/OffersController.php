@@ -3,14 +3,13 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\data\ActiveDataProvider;
 use app\models\NewOfferForm;
 use app\models\ChatForm;
 use app\models\EditOfferForm;
 use app\models\NewCommentForm;
 use app\models\Offer;
-use yii\helpers\ArrayHelper;
 
 class OffersController extends AccessController
 {
@@ -114,8 +113,23 @@ class OffersController extends AccessController
         return $this->goHome();
     }
 
-    public function actionCategory()
+    public function actionCategory($id)
     {
-        return $this->render('category');
+        $query = Offer::find()
+            ->joinWith('categories')
+            ->where(['category_id' => $id])
+            ->orderBy(['created_at' => SORT_DESC]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 8,
+            ],
+        ]);
+
+        return $this->render('category', [
+            'offers' => $dataProvider->getModels(),
+            'pagination' => $dataProvider->getPagination(),
+        ]);
     }
 }
