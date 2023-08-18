@@ -40,7 +40,7 @@ $this->title = $offer->title;
                 <ul class="ticket__tags">
                     <?php foreach ($offer->categories as $category) : ?>
                         <li>
-                            <a href="<?= Url::to(['category/view', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
+                            <a href="<?= Url::to(['offers/category/', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
                                     <img src="<?= $category->image ?>" alt="Иконка категории">
                                 </span>
