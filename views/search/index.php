@@ -12,17 +12,24 @@ $publicationWord = Yii::$app->i18n->format('{n, plural, =1{публикация}
 <section class="search-results">
     <h1 class="visually-hidden">Результаты поиска</h1>
     <div class="search-results__wrapper">
-    <p class="search-results__label"><?= $foundWord ?> <span class="js-results"><?= $foundCount ?> <?= $publicationWord ?></span></p>
-        <ul class="search-results__list">
-            <?php foreach ($offers as $offer) : ?>
-                <li class="search-results__item">
-                    <?= $this->render('../partials/_offerCard', ['offer' => $offer]) ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if (!$foundCount) : ?>
+            <div class="search-results__message">
+                <p>Не найдено <br>ни&nbsp;одной публикации</p>
+            </div>
+        <?php else : ?>
+            <p class="search-results__label">
+                <?= $foundWord ?> <span class="js-results"><?= $foundCount ?> <?= $publicationWord ?></span>
+            </p>
+            <ul class="search-results__list">
+                <?php foreach ($offers as $offer) : ?>
+                    <li class="search-results__item">
+                        <?= $this->render('../partials/_offerCard', ['offer' => $offer]) ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
     </div>
     <?= \yii\widgets\LinkPager::widget(['pagination' => $pagination]) ?>
 </section>
 
 <?= $this->render('../partials/_newOffers') ?>
-
