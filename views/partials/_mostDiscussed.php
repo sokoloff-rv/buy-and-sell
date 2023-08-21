@@ -15,7 +15,9 @@ if (count($offers)) :
         </div>
         <ul>
             <?php foreach ($offers as $offer) : ?>
-                <?= $this->render('_offerCard', ['offer' => $offer]) ?>
+                <li class="tickets-list__item">
+                    <?= $this->render('_offerCard', ['offer' => $offer]) ?>
+                </li>
             <?php endforeach; ?>
         </ul>
     </div>

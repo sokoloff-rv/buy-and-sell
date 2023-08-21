@@ -7,7 +7,7 @@ use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
-use app\models\User;
+use yii\widgets\ActiveForm;
 
 AppAsset::register($this);
 
@@ -45,11 +45,22 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     </li>
                 </ul>
             </nav>
-            <form class="search" method="get" action="#" autocomplete="off">
-                <input type="search" name="query" placeholder="Поиск" aria-label="Поиск">
-                <div class="search__icon"></div>
-                <div class="search__close-btn"></div>
-            </form>
+
+            <?php
+            $searchModel = Yii::$app->search->getSearchModel();
+            $form = ActiveForm::begin([
+                'action' => ['/search/index'],
+                'method' => 'get',
+                'options' => ['class' => 'search', 'autocomplete' => 'off'],
+            ]);
+            ?>
+            <?= $form->field($searchModel, 'query', [
+                'options' => ['class' => ''],
+                'template' => '{input}<div class="search__icon"></div><div class="search__close-btn"></div>',
+            ])->textInput(['placeholder' => 'Поиск', 'aria-label' => 'Поиск']) ?>
+            <?php ActiveForm::end(); ?>
+
+
             <?php if (Yii::$app->user->isGuest) : ?>
                 <a class="header__input" href="/register">Вход и регистрация</a>
             <?php else : ?>

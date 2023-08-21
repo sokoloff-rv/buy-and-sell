@@ -18,7 +18,9 @@ $this->title = 'Категория';
         </div>
         <ul>
             <?php foreach ($offers as $offer) : ?>
-                <?= $this->render('../partials/_offerCard', ['offer' => $offer]) ?>
+                <li class="tickets-list__item">
+                    <?= $this->render('../partials/_offerCard', ['offer' => $offer]) ?>
+                </li>
             <?php endforeach; ?>
         </ul>
     </div>

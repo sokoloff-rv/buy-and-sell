@@ -13,7 +13,9 @@ $offers = Offer::find()->orderBy(['created_at' => SORT_DESC])->limit(8)->all();
         </div>
         <ul>
             <?php foreach ($offers as $offer) : ?>
-                <?= $this->render('_offerCard', ['offer' => $offer]) ?>
+                <li class="tickets-list__item">
+                    <?= $this->render('_offerCard', ['offer' => $offer]) ?>
+                </li>
             <?php endforeach; ?>
         </ul>
     </div>

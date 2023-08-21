@@ -65,6 +65,9 @@ $config = [
                 ],
             ],
         ],
+        'search' => [
+            'class' => 'app\components\SearchComponent',
+        ],
     ],
     'params' => $params,
 ];
