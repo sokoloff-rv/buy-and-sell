@@ -8,6 +8,7 @@ use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 
@@ -17,7 +18,11 @@ $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, 
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+
+$controller = Yii::$app->controller->id;
+$action = Yii::$app->controller->action->id;
 ?>
+
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
@@ -30,18 +35,18 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
 
-    <header class="header">
+    <header class="header <?= Yii::$app->user->isGuest ? '' : 'header--logged' ?> ">
         <div class="header__wrapper">
             <a class="header__logo logo" href="/">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
             <nav class="header__user-menu">
                 <ul class="header__list">
-                    <li class="header__item">
-                        <a href="my-tickets">Публикации</a>
+                    <li class="header__item <?= ($controller == 'my' && $action == 'index') ? 'header__item--active' : '' ?>">
+                        <a href="<?= Url::to(['my/index']) ?>">Публикации</a>
                     </li>
-                    <li class="header__item">
-                        <a href="comments">Комментарии</a>
+                    <li class="header__item <?= ($controller == 'my' && $action == 'comments') ? 'header__item--active' : '' ?>">
+                        <a href="<?= Url::to(['my/comments']) ?>">Комментарии</a>
                     </li>
                 </ul>
             </nav>
