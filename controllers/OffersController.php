@@ -109,8 +109,6 @@ class OffersController extends AccessController
             throw new NotFoundHttpException('Объявление не найдено.');
         }
         $offer->delete();
-
-        return $this->goHome();
     }
 
     public function actionCategory($id)

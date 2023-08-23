@@ -26,4 +26,7 @@ use yii\helpers\Html;
             <p><?= Html::encode($offer->description) ?></p>
         </div>
     </div>
+    <?php if (isset($showDeleteButton) && $showDeleteButton): ?>
+        <a href="<?= \yii\helpers\Url::to(['offers/delete', 'id' => $offer->id]) ?>" class="ticket-card__del js-delete" type="button">Удалить</a>
+    <?php endif; ?>
 </div>

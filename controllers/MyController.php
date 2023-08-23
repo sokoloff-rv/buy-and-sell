@@ -3,8 +3,6 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\ForbiddenHttpException;
-use yii\web\Controller;
 use app\models\Offer;
 use app\models\Comment;
 
@@ -12,7 +10,12 @@ class MyController extends AccessController
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $userId = Yii::$app->user->id;
+        $offers = Offer::find()->where(['user_id' => $userId])->orderBy(['created_at' => SORT_DESC])->all();
+
+        return $this->render('index', [
+            'offers' => $offers,
+        ]);
     }
 
     public function actionComments()
