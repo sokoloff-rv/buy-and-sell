@@ -110,7 +110,8 @@ class OffersController extends AccessController
         }
         $offer->delete();
 
-        return $this->redirect(['/my/index']);
+        $referrer = Yii::$app->request->referrer;
+        return $this->redirect($referrer);
     }
 
     public function actionCategory($id)
