@@ -60,7 +60,7 @@ $config = [
                     'class' => 'yii\authclient\clients\VKontakte',
                     'clientId' => '51707493',
                     'clientSecret' => 'JBfsW4lYyz8WuB7myhMT',
-                    'returnUrl' => 'http://94214-kupi-prodai-1/login/vk-auth',
+                    'returnUrl' => 'http://buy-and-sell/login/vk-auth',
                     'scope' => 'email',
                 ],
             ],
