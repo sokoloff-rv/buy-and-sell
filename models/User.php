@@ -111,11 +111,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function createUserFromVK($userData)
     {
         $user = new User;
-        $user->name = $userData['first_name'] . ' ' . $userData['last_name'];
-        $user->email = $userData['email'];
-        $user->password = Yii::$app->getSecurity()->generatePasswordHash('password');
+        $user->name = trim(($userData['first_name'] ?? '') . ' ' . ($userData['last_name'] ?? ''));
+        $user->email = $userData['email'] ?? null;
+
+        // Вход выполняется по VK ID, поэтому пароль задаётся случайным.
+        $user->password = Yii::$app->getSecurity()->generatePasswordHash(
+            Yii::$app->getSecurity()->generateRandomString()
+        );
+
         $user->vk_id = $userData['user_id'];
-        $user->avatar = $userData['photo'];
+        $user->avatar = $userData['avatar'] ?? null;
         $user->save(false);
 
         Yii::$app->user->login($user);

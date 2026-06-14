@@ -56,11 +56,11 @@ $config = [
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
             'clients' => [
-                'vkontakte' => [
-                    'class' => 'yii\authclient\clients\VKontakte',
+                'vkid' => [
+                    'class' => 'app\components\VKID',
                     'clientId' => '51707493',
                     'clientSecret' => 'JBfsW4lYyz8WuB7myhMT',
-                    'returnUrl' => 'http://buy-and-sell/login/vk-auth',
+                    'returnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
                     'scope' => 'email',
                 ],
             ],

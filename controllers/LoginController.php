@@ -33,16 +33,18 @@ class LoginController extends Controller
 
     public function actionVk()
     {
-        $url = Yii::$app->authClientCollection->getClient("vkontakte")->buildAuthUrl();
+        $url = Yii::$app->authClientCollection->getClient("vkid")->buildAuthUrl();
         Yii::$app->getResponse()->redirect($url);
     }
 
     public function actionVkAuth()
     {
-        $client = Yii::$app->authClientCollection->getClient("vkontakte");
+        $client = Yii::$app->authClientCollection->getClient("vkid");
 
-        $code = Yii::$app->request->get('code');        
-        $accessToken = $client->fetchAccessToken($code);
+        $code = Yii::$app->request->get('code');
+        // VK ID возвращает device_id на redirect; он обязателен при обмене кода на токен.
+        $deviceId = Yii::$app->request->get('device_id');
+        $accessToken = $client->fetchAccessToken($code, ['device_id' => $deviceId]);
         if (!$accessToken) {
             throw new \Exception('Не удалось получить токен доступа от VK.');
         }
@@ -58,7 +60,7 @@ class LoginController extends Controller
             if (!$foundUser->save()) {
                 throw new \Exception('Не удалось сохранить пользователя.');
             }
-            
+
             Yii::$app->user->login($foundUser);
         } else {
             $newUser = new User();
