@@ -41,7 +41,7 @@ $action = Yii::$app->controller->action->id;
             <nav class="header__user-menu">
                 <ul class="header__list">
                     <li class="header__item <?= ($controller == 'my' && $action == 'index') ? 'header__item--active' : '' ?>">
-                        <a href="<?= Url::to(['my/index']) ?>">Публикации</a>
+                        <a href="<?= Url::to(['my/index']) ?>">Мои объявления</a>
                     </li>
                     <li class="header__item <?= ($controller == 'my' && $action == 'comments') ? 'header__item--active' : '' ?>">
                         <a href="<?= Url::to(['my/comments']) ?>">Комментарии</a>
@@ -100,7 +100,11 @@ $action = Yii::$app->controller->action->id;
             <div class="page-footer__col">
                 <ul class="page-footer__nav">
                     <li>
-                        <a href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
+                        <?php if (Yii::$app->user->isGuest) : ?>
+                            <a href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
+                        <?php else : ?>
+                            <a href="<?= Url::to(['/my']) ?>">Мои объявления</a>
+                        <?php endif; ?>
                     </li>
                     <li>
                         <a href="<?= Url::to(['/offers/add']) ?>">Создать объявление</a>
