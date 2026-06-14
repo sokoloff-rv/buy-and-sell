@@ -1,14 +1,9 @@
 <?php
 
-/**
- * Шаблон локальных параметров. Скопируйте файл в params-local.php и заполните
- * значениями своего окружения. Сам params-local.php в Git не попадает.
- */
-
 return [
-    // Ключ валидации cookie — любая случайная строка. Обязателен.
     'cookieValidationKey' => '',
-    // Идентификатор и защищённый ключ приложения VK ID.
     'vkClientId' => '',
     'vkClientSecret' => '',
+    'vkReturnUrl' => 'https://example.com/login/vk-auth',
+    'mailerDsn' => 'smtp://user:password@smtp.example.com:587',
 ];

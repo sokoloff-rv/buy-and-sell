@@ -44,6 +44,7 @@ class MainController extends Controller
                 return $this->render('error4xx', ['statusCode' => $statusCode]);
             }
 
+            Yii::error($exception);
             Yii::$app->response->statusCode = 500;
             return $this->render('error500');
         }

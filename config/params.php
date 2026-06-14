@@ -8,6 +8,8 @@ $params = [
     'cookieValidationKey' => '',
     'vkClientId' => '',
     'vkClientSecret' => '',
+    'vkReturnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
+    'mailerDsn' => '',
 ];
 
 $localParams = __DIR__ . '/params-local.php';

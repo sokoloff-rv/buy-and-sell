@@ -29,6 +29,9 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'imageStorage' => [
+            'class' => 'app\components\ImageStorage',
+        ],
     ],
     'params' => $params,
 

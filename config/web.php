@@ -2,6 +2,14 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$mailer = [
+    'class' => \yii\symfonymailer\Mailer::class,
+    'viewPath' => '@app/mail',
+    'useFileTransport' => !YII_ENV_PROD && empty($params['mailerDsn']),
+];
+if (!empty($params['mailerDsn'])) {
+    $mailer['transport'] = ['dsn' => $params['mailerDsn']];
+}
 
 $config = [
     'id' => 'basic',
@@ -26,12 +34,7 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'main/error',
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-
-            'useFileTransport' => true,
-        ],
+        'mailer' => $mailer,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -71,13 +74,16 @@ $config = [
                     'class' => 'app\components\VKID',
                     'clientId' => $params['vkClientId'],
                     'clientSecret' => $params['vkClientSecret'],
-                    'returnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
+                    'returnUrl' => $params['vkReturnUrl'],
                     'scope' => 'email',
                 ],
             ],
         ],
         'search' => [
             'class' => 'app\components\SearchComponent',
+        ],
+        'imageStorage' => [
+            'class' => 'app\components\ImageStorage',
         ],
     ],
     'params' => $params,
