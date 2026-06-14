@@ -73,15 +73,17 @@ class LoginController extends Controller
 
         $vkId = $userAttributes['user_id'];
         $email = $userAttributes['email'] ?? $accessToken->getParam('email');
-        if (!$email) {
-            throw new BadRequestHttpException('VK не передал email пользователя.');
-        }
-        $userAttributes['email'] = $email;
 
         $foundUser = User::findOne(['vk_id' => $vkId]);
         if (!$foundUser && $email) {
             $foundUser = User::findOne(['email' => $email]);
         }
+
+        if (!$foundUser && !$email) {
+            throw new BadRequestHttpException('VK не передал email, а пользователь не найден.');
+        }
+
+        $userAttributes['email'] = $email;
 
         if ($foundUser) {
             $transaction = Yii::$app->db->beginTransaction();
