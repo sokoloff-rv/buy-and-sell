@@ -14,8 +14,8 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '8jNBc0nNdVS6TJaml8t_7vLxAIcMgViX',
+            // Ключ задаётся в config/params-local.php (см. params-local.php.example)
+            'cookieValidationKey' => $params['cookieValidationKey'],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -58,8 +58,8 @@ $config = [
             'clients' => [
                 'vkid' => [
                     'class' => 'app\components\VKID',
-                    'clientId' => '51707493',
-                    'clientSecret' => 'JBfsW4lYyz8WuB7myhMT',
+                    'clientId' => $params['vkClientId'],
+                    'clientSecret' => $params['vkClientSecret'],
                     'returnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
                     'scope' => 'email',
                 ],

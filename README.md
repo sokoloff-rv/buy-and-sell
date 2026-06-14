@@ -66,14 +66,8 @@ http://localhost/basic/web/
 Extract the archive file downloaded from [yiiframework.com](https://www.yiiframework.com/download/) to
 a directory named `basic` that is directly under the Web root.
 
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
-```
+Provide the environment secrets (including the cookie validation key) as described in the
+[Secrets](#secrets) section below. They are no longer stored in `config/web.php`.
 
 You can then access the application through the following URL:
 
@@ -126,6 +120,41 @@ return [
 - Yii won't create the database for you, this has to be done manually before you can access it.
 - Check and edit the other files in the `config/` directory to customize your application as required.
 - Refer to the README in the `tests` directory for information specific to basic application tests.
+
+### Secrets
+
+Secrets (the cookie validation key and the VK ID application credentials) are **not** stored
+in the repository. They live in `config/params-local.php`, which is excluded from Git via
+`.gitignore`. The file `config/db.php` with the database credentials is excluded the same way.
+
+Copy the template and fill it in with your environment values:
+
+```bash
+cp config/params-local.php.example config/params-local.php
+```
+
+```php
+<?php
+
+return [
+    // Cookie validation key — any random string. Required.
+    'cookieValidationKey' => '',
+    // VK ID application id and protected key.
+    'vkClientId' => '',
+    'vkClientSecret' => '',
+];
+```
+
+Where to get the values:
+
+- `cookieValidationKey` — any random string, e.g. the output of `openssl rand -base64 32`;
+- `vkClientId` and `vkClientSecret` — the id and protected key of the application created in the
+  [VK ID dashboard](https://id.vk.com/about/business/go/). Authentication uses the current VK ID
+  protocol (OAuth 2.1); in the VK application settings specify a trusted redirect URL of the form
+  `https://<your-domain>/login/vk-auth`.
+
+Defaults from `config/params.php` are overridden by the values in `config/params-local.php`,
+so the application falls back gracefully when a value is missing.
 
 
 TESTING

@@ -40,3 +40,6 @@ web/uploads
 
 #bd config
 /config/db.php
+
+#local secrets
+/config/params-local.php
