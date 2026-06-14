@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\Html;
+
 $this->title = 'Главная страница';
 ?>
 
@@ -7,7 +9,7 @@ $this->title = 'Главная страница';
     <section class="tickets-list">
         <div class="tickets-list__wrapper">
             <p>На сайте еще не опубликовано ни одного объявления.</p>
-            <a class="btn btn--medium" href="/login">Вход и регистрация</a>
+            <?= Html::a('Вход и регистрация', ['/login'], ['class' => 'btn btn--medium']) ?>
         </div>
     </section>
 <?php else : ?>

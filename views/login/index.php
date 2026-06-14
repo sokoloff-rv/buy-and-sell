@@ -28,9 +28,8 @@ $this->title = 'Авторизация';
     ])->passwordInput(['value' => ''])->label('Пароль') ?>
 
     <?= Html::submitButton('Войти', ['class' => 'login__button btn btn--medium js-button']) ?>
-    <a class="btn btn--small btn--flex btn--white" href="/login/vk?authclient=vkontakte">
-        Войти через
-        <span class="icon icon--vk"></span>
-    </a>
+    <?= Html::a('Войти через <span class="icon icon--vk"></span>', ['/login/vk'], [
+        'class' => 'btn btn--small btn--flex btn--white',
+    ]) ?>
     <?php ActiveForm::end(); ?>
 </section>

@@ -34,7 +34,7 @@ $action = Yii::$app->controller->action->id;
 
     <header class="header <?= Yii::$app->user->isGuest ? '' : 'header--logged' ?> ">
         <div class="header__wrapper">
-            <a class="header__logo logo" href="/">
+            <a class="header__logo logo" href="<?= Url::to(['/main/index']) ?>">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
             <?php if (!Yii::$app->user->isGuest) : ?>
@@ -85,7 +85,7 @@ $action = Yii::$app->controller->action->id;
     <footer class="page-footer">
         <div class="page-footer__wrapper">
             <div class="page-footer__col">
-                <a href="/" class="page-footer__logo-academy" aria-label="Ссылка на сайт HTML-Академии">
+                <a href="<?= Url::to(['/main/index']) ?>" class="page-footer__logo-academy" aria-label="Ссылка на главную страницу">
                     <svg width="132" height="46">
                         <use xlink:href="img/sprite_auto.svg#logo-htmlac"></use>
                     </svg>
@@ -93,7 +93,7 @@ $action = Yii::$app->controller->action->id;
                 <p class="page-footer__copyright">© 2019 Проект Академии</p>
             </div>
             <div class="page-footer__col">
-                <a href="/" class="page-footer__logo logo">
+                <a href="<?= Url::to(['/main/index']) ?>" class="page-footer__logo logo">
                     <img src="/img/logo.svg" width="179" height="35" alt="Логотип Куплю Продам">
                 </a>
             </div>
