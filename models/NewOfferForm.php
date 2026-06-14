@@ -27,7 +27,7 @@ class NewOfferForm extends Model
             [['type'], 'in', 'range' => [Offer::TYPE_BUY, Offer::TYPE_SELL]],
             [['category_id'], 'each', 'rule' => ['integer']],
             [['category_id'], 'each', 'rule' => ['exist', 'targetClass' => Category::class, 'targetAttribute' => 'id']],
-            [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
+            [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'mimeTypes' => 'image/png, image/jpeg', 'checkExtensionByMimeType' => true, 'maxFiles' => 5],
         ];
     }
 
@@ -59,30 +59,40 @@ class NewOfferForm extends Model
     public function createOffer(): int|bool
     {
         $this->imageFiles = UploadedFile::getInstances($this, 'imageFiles');
+        if (!$this->validate()) {
+            return false;
+        }
 
-        if ($this->validate()) {
+        $imagePaths = [];
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $imagePaths = Yii::$app->imageStorage->saveMany($this->imageFiles);
             $newOffer = $this->newOffer();
             if (!$newOffer->save()) {
-                return false;
+                throw new \RuntimeException('Не удалось сохранить объявление.');
             }
             foreach ($this->category_id as $categoryId) {
                 $category = Category::findOne($categoryId);
-                if ($category) {
-                    $newOffer->link('categories', $category);
+                if (!$category) {
+                    throw new \RuntimeException('Категория не найдена.');
+                }
+                $newOffer->link('categories', $category);
+            }
+            foreach ($imagePaths as $imagePath) {
+                if (!Image::saveImage($imagePath, $newOffer->id)) {
+                    throw new \RuntimeException('Не удалось сохранить изображение объявления.');
                 }
             }
-            if ($this->imageFiles) {
-                foreach ($this->imageFiles as $file) {
-                    $newFileName = uniqid('upload') . '.' . $file->getExtension();
-                    $file->saveAs(Yii::getAlias('@webroot/uploads/' . $newFileName));
-                    $imagePath = '/uploads/' . $newFileName;
-                    Image::saveImage($imagePath, $newOffer->id);
-                }
-            }
+            $transaction->commit();
             return $newOffer->id;
+        } catch (\Throwable $exception) {
+            if ($transaction->isActive) {
+                $transaction->rollBack();
+            }
+            Yii::$app->imageStorage->deleteMany($imagePaths);
+            Yii::error($exception);
+            $this->addError('imageFiles', 'Не удалось сохранить объявление.');
+            return false;
         }
-
-        return false;
     }
-
 }

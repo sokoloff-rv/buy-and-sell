@@ -36,22 +36,33 @@ class RegisterController extends Controller
             $registerForm->avatar = UploadedFile::getInstance($registerForm, 'avatar');
 
             if ($registerForm->validate()) {
-                $uniqueFileName = uniqid() . '_' . $registerForm->avatar->baseName . '.' . $registerForm->avatar->extension;
-                $filePath = Yii::getAlias('@webroot/uploads/' . $uniqueFileName);
-                $registerForm->avatar->saveAs($filePath);
-
-                $user->name = $registerForm->name;
-                $user->email = $registerForm->email;
-                $user->password = Yii::$app->getSecurity()->generatePasswordHash($registerForm->password);
-                $user->avatar = '/uploads/' . $uniqueFileName;
-                $user->created_at = date('Y-m-d H:i:s');
-                $user->updated_at = date('Y-m-d H:i:s');
-
-                if ($user->save()) {
+                $avatarPath = null;
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $avatarPath = Yii::$app->imageStorage->save($registerForm->avatar);
+                    $user->name = $registerForm->name;
+                    $user->email = $registerForm->email;
+                    $user->password = Yii::$app->getSecurity()->generatePasswordHash($registerForm->password);
+                    $user->avatar = $avatarPath;
+                    if (!$user->save()) {
+                        throw new \RuntimeException('Не удалось сохранить пользователя.');
+                    }
                     User::assignUserRole($user->id);
+                    $transaction->commit();
                     return $this->redirect(['/login']);
-                } else {
-                    Yii::$app->session->setFlash('error', 'Не удалось сохранить файл.');
+                } catch (\Throwable $exception) {
+                    if ($transaction->isActive) {
+                        $transaction->rollBack();
+                    }
+                    if ($avatarPath !== null) {
+                        try {
+                            Yii::$app->imageStorage->delete($avatarPath);
+                        } catch (\Throwable $cleanupException) {
+                            Yii::warning($cleanupException);
+                        }
+                    }
+                    Yii::error($exception);
+                    $registerForm->addError('avatar', 'Не удалось создать аккаунт.');
                 }
             }
         }

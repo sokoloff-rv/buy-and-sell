@@ -11,7 +11,7 @@ class Offer extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'offers';
+        return '{{%offers}}';
     }
 
     public function rules()
@@ -49,13 +49,14 @@ class Offer extends \yii\db\ActiveRecord
 
     public function getImages()
     {
-        return $this->hasMany(Image::class, ['offer_id' => 'id']);
+        return $this->hasMany(Image::class, ['offer_id' => 'id'])
+            ->orderBy(['id' => SORT_ASC]);
     }
 
     public function getCategories()
     {
         return $this->hasMany(Category::class, ['id' => 'category_id'])
-            ->viaTable('offer_categories', ['offer_id' => 'id']);
+            ->viaTable('{{%offer_categories}}', ['offer_id' => 'id']);
     }
 
     public function getUser()
@@ -73,9 +74,9 @@ class Offer extends \yii\db\ActiveRecord
         return self::find()
             ->alias('offers')
             ->with(['images', 'categories'])
-            ->innerJoin('comments', 'comments.offer_id = offers.id')
+            ->innerJoin('{{%comments}} comments', 'comments.offer_id = offers.id')
             ->groupBy('offers.id')
-            ->orderBy(['COUNT(comments.id)' => SORT_DESC, 'offers.created_at' => SORT_DESC])
+            ->orderBy(['COUNT(comments.id)' => SORT_DESC, 'offers.created_at' => SORT_DESC, 'offers.id' => SORT_DESC])
             ->limit($limit)
             ->all();
     }
@@ -90,5 +91,38 @@ class Offer extends \yii\db\ActiveRecord
         return mb_strlen($this->description) > 55
             ? mb_substr($this->description, 0, 54) . '…'
             : $this->description;
+    }
+
+    public function deleteWithFiles(): bool
+    {
+        $paths = array_column($this->images, 'image_path');
+        $staged = Yii::$app->imageStorage->stageDeletion($paths);
+        $transaction = null;
+        try {
+            $transaction = Yii::$app->db->beginTransaction();
+            if ($this->delete() === false) {
+                throw new \RuntimeException('Не удалось удалить объявление.');
+            }
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            if ($transaction && $transaction->isActive) {
+                $transaction->rollBack();
+            }
+            try {
+                Yii::$app->imageStorage->restoreStaged($staged);
+            } catch (\Throwable $restoreException) {
+                Yii::error($restoreException);
+            }
+            Yii::error($exception);
+            throw $exception;
+        }
+
+        try {
+            Yii::$app->imageStorage->purgeStaged($staged);
+        } catch (\Throwable $exception) {
+            Yii::warning($exception);
+        }
+
+        return true;
     }
 }

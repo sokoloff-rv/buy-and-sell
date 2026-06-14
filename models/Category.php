@@ -10,7 +10,7 @@ class Category extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'categories';
+        return '{{%categories}}';
     }
 
     public function rules()
@@ -33,16 +33,17 @@ class Category extends \yii\db\ActiveRecord
     public function getOffers()
     {
         return $this->hasMany(Offer::class, ['id' => 'offer_id'])
-            ->viaTable('offer_categories', ['category_id' => 'id']);
+            ->viaTable('{{%offer_categories}}', ['category_id' => 'id']);
     }
 
     public static function findWithOfferCounts(bool $onlyWithOffers = false): array
     {
         $query = self::find()
+            ->alias('categories')
             ->select(['categories.*', 'COUNT(offer_categories.offer_id) AS offers_count'])
-            ->leftJoin('offer_categories', 'offer_categories.category_id = categories.id')
+            ->leftJoin('{{%offer_categories}} offer_categories', 'offer_categories.category_id = categories.id')
             ->groupBy('categories.id')
-            ->orderBy(['categories.name' => SORT_ASC]);
+            ->orderBy(['categories.name' => SORT_ASC, 'categories.id' => SORT_ASC]);
 
         if ($onlyWithOffers) {
             $query->having(['>', 'COUNT(offer_categories.offer_id)', 0]);

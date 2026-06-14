@@ -11,7 +11,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function tableName()
     {
-        return 'users';
+        return '{{%users}}';
     }
 
     public function rules()
@@ -84,11 +84,21 @@ class User extends ActiveRecord implements IdentityInterface
         $user->password = null;
         $user->vk_id = $userData['user_id'];
         $user->avatar = $userData['avatar'] ?? null;
-        if (!$user->save()) {
-            throw new \RuntimeException('Не удалось зарегистрировать пользователя VK.');
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!$user->save()) {
+                throw new \RuntimeException('Не удалось зарегистрировать пользователя VK.');
+            }
+
+            self::assignUserRole($user->id);
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            if ($transaction->isActive) {
+                $transaction->rollBack();
+            }
+            throw $exception;
         }
 
-        self::assignUserRole($user->id);
         Yii::$app->user->login($user);
     }
 

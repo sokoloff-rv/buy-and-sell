@@ -84,14 +84,24 @@ class LoginController extends Controller
         }
 
         if ($foundUser) {
-            $foundUser->vk_id = $vkId;
-            $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
-            $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
-            if (!$foundUser->save()) {
-                throw new \Exception('Не удалось сохранить пользователя.');
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $foundUser->vk_id = $vkId;
+                $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
+                $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
+                if (!$foundUser->save()) {
+                    throw new \Exception('Не удалось сохранить пользователя.');
+                }
+
+                User::assignUserRole($foundUser->id);
+                $transaction->commit();
+            } catch (\Throwable $exception) {
+                if ($transaction->isActive) {
+                    $transaction->rollBack();
+                }
+                throw $exception;
             }
 
-            User::assignUserRole($foundUser->id);
             Yii::$app->user->login($foundUser);
         } else {
             $newUser = new User();

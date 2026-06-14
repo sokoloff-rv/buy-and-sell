@@ -9,7 +9,7 @@ class Image extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'images';
+        return '{{%images}}';
     }
 
     public function rules()
@@ -36,11 +36,11 @@ class Image extends \yii\db\ActiveRecord
         return $this->hasOne(Offer::class, ['id' => 'offer_id']);
     }
 
-    public static function saveImage(string $imagePath, int $offerId): void
+    public static function saveImage(string $imagePath, int $offerId): bool
     {
         $newImage = new self;
         $newImage->image_path = $imagePath;
         $newImage->offer_id = $offerId;
-        $newImage->save(false);
+        return $newImage->save();
     }
 }

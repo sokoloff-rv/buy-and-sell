@@ -9,7 +9,7 @@ class Comment extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'comments';
+        return '{{%comments}}';
     }
 
     public function rules()
