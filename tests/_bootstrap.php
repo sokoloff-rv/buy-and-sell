@@ -7,42 +7,46 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 $db = require __DIR__ . '/../config/test_db.php';
-$prefix = $db['tablePrefix'];
-if (!preg_match('/^[a-zA-Z0-9_]+$/', $prefix)) {
-    throw new RuntimeException('Некорректный префикс тестовых таблиц.');
-}
-$connection = new PDO($db['dsn'], $db['username'], $db['password']);
-$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+$console = new yii\console\Application([
+    'id' => 'buyandsell-test-setup',
+    'basePath' => dirname(__DIR__),
+    'controllerNamespace' => 'app\commands',
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm' => '@vendor/npm-asset',
+    ],
+    'components' => [
+        'db' => $db,
+        'authManager' => ['class' => yii\rbac\DbManager::class],
+        'cache' => ['class' => yii\caching\FileCache::class],
+    ],
+]);
+
+ob_start();
+$rbacResult = $console->runAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations', 'interactive' => 0]);
+$appResult = $console->runAction('migrate/up', ['interactive' => 0]);
+$migrateOutput = ob_get_clean();
+if ($rbacResult !== 0 || $appResult !== 0) {
+    fwrite(STDERR, $migrateOutput);
+    throw new RuntimeException('Не удалось применить миграции тестовой базы.');
+}
+
+$connection = Yii::$app->db;
 $tables = [
-    'auth_assignment',
-    'auth_item_child',
-    'auth_item',
-    'auth_rule',
-    'comments',
-    'images',
-    'offer_categories',
-    'categories',
-    'offers',
-    'users',
+    'comments', 'images', 'offer_categories', 'categories', 'offers', 'users',
+    'auth_assignment', 'auth_item_child', 'auth_item', 'auth_rule',
 ];
 
-$connection->exec('SET FOREIGN_KEY_CHECKS=0');
+$connection->createCommand('SET FOREIGN_KEY_CHECKS=0')->execute();
 foreach ($tables as $table) {
-    $connection->exec("DROP TABLE IF EXISTS `{$prefix}{$table}`");
+    $connection->createCommand()->delete($table)->execute();
 }
-foreach (array_reverse($tables) as $table) {
-    $connection->exec("CREATE TABLE `{$prefix}{$table}` LIKE `{$table}`");
-}
-$connection->exec('SET FOREIGN_KEY_CHECKS=1');
+$connection->createCommand('SET FOREIGN_KEY_CHECKS=1')->execute();
 
 $fixtures = require __DIR__ . '/fixtures/data.php';
 foreach ($fixtures as $table => $rows) {
     foreach ($rows as $row) {
-        $columns = array_keys($row);
-        $columnSql = implode(', ', array_map(static fn (string $column): string => "`{$column}`", $columns));
-        $valueSql = implode(', ', array_fill(0, count($columns), '?'));
-        $statement = $connection->prepare("INSERT INTO `{$prefix}{$table}` ({$columnSql}) VALUES ({$valueSql})");
-        $statement->execute(array_values($row));
+        $connection->createCommand()->insert($table, $row)->execute();
     }
 }

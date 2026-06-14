@@ -43,6 +43,7 @@ web/uploads
 
 #local secrets
 /config/params-local.php
+/config/test_db-local.php
 
 /.env
 /.env.*

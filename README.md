@@ -66,9 +66,14 @@ php yii role/revoke-moderator moderator@example.com
 
 ## Тесты
 
-Из-за ограничений хостинга тесты по умолчанию используют изолированные таблицы с префиксом `test_` в доступной MySQL-базе. Перед каждым запуском они пересоздаются из актуальной production-схемы и наполняются fixtures; рабочие таблицы не изменяются.
+Тесты работают в отдельной базе `buyandsell_test` и не трогают рабочую БД. Учётные данные тестового пользователя СУБД (с полным доступом к `buyandsell_test`) храните вне Git:
 
-Для отдельной тестовой базы задайте `TEST_DB_DSN`, `TEST_DB_USER`, `TEST_DB_PASSWORD` и при необходимости `TEST_DB_PREFIX`.
+```bash
+cp config/test_db-local.php.example config/test_db-local.php
+# впишите username/password тестового пользователя
+```
+
+Схему тестовой базы строит сам bootstrap миграциями проекта при первом запуске; перед каждым прогоном данные очищаются и наполняются fixtures. При необходимости параметры можно переопределить через `TEST_DB_DSN`, `TEST_DB_USER`, `TEST_DB_PASSWORD`.
 
 ```bash
 php vendor/codeception/codeception/codecept build
