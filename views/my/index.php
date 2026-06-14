@@ -1,7 +1,5 @@
 <?php
 
-/* @var $this yii\web\View */
-
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 

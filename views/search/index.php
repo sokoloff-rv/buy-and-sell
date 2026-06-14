@@ -1,7 +1,5 @@
 <?php
 
-/* @var $this yii\web\View */
-
 $this->title = 'Поиск';
 
 $foundCount = $pagination->totalCount;
@@ -14,7 +12,7 @@ $publicationWord = Yii::$app->i18n->format('{n, plural, =1{публикация}
     <div class="search-results__wrapper">
         <?php if (!$foundCount) : ?>
             <div class="search-results__message">
-                <p>Не найдено <br>ни&nbsp;одной публикации</p>
+                <p>Не найдено ни одной публикации</p>
             </div>
         <?php else : ?>
             <p class="search-results__label">
@@ -32,4 +30,4 @@ $publicationWord = Yii::$app->i18n->format('{n, plural, =1{публикация}
     <?= \yii\widgets\LinkPager::widget(['pagination' => $pagination]) ?>
 </section>
 
-<?= $this->render('../partials/_newOffers') ?>
+<?= $this->render('../partials/_newOffers', ['offers' => $newOffers]) ?>

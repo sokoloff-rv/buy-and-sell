@@ -1,6 +1,6 @@
 <?php
 
-/* @var $this yii\web\View */
+use yii\helpers\Html;
 
 $this->title = 'Комментарии';
 ?>
@@ -11,12 +11,12 @@ $this->title = 'Комментарии';
         <?php foreach ($offersWithComments as $data) : ?>
             <div class="comments__block">
                 <div class="comments__header">
-                    <a href="#" class="announce-card">
+                    <a href="<?= \yii\helpers\Url::to(['/offers/index', 'id' => $data['offer']->id]) ?>" class="announce-card">
                         <h2 class="announce-card__title">
-                            <?= $data['offer']->title ?>
+                            <?= Html::encode($data['offer']->title) ?>
                         </h2>
                         <span class="announce-card__info">
-                            <span class="announce-card__price">₽ 
+                            <span class="announce-card__price">₽
                                 <?= round($data['offer']->price, 0) ?>
                             </span>
                             <span class="announce-card__type"><?= $data['offer']->label ?></span>
@@ -29,15 +29,15 @@ $this->title = 'Комментарии';
                             <div class="comment-card">
                                 <div class="comment-card__header">
                                     <a href="#" class="comment-card__avatar avatar">
-                                        <img src="/<?= $comment->user->avatar ?>" alt="Аватар пользователя">
+                                        <img src="<?= Html::encode($comment->user->avatarUrl) ?>" alt="Аватар пользователя">
                                     </a>
                                     <p class="comment-card__author">
-                                        <?= $comment->user->name ?>
+                                        <?= Html::encode($comment->user->name) ?>
                                     </p>
                                 </div>
                                 <div class="comment-card__content">
                                     <p>
-                                        <?= $comment->text ?>
+                                        <?= Html::encode($comment->text) ?>
                                     </p>
                                 </div>
                                 <button class="comment-card__delete js-delete" type="button" onclick="location.href='<?= Yii::$app->urlManager->createUrl(['my/delete-comment', 'id' => $comment->id]) ?>'">Удалить</button>

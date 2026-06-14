@@ -251,7 +251,6 @@ class AlertTest extends \Codeception\Test\Unit
 
         Alert::widget();
 
-        // Simulate redirect
         Yii::$app->session->close();
         Yii::$app->session->open();
 

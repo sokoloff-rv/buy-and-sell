@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 
 abstract class AccessController extends Controller
 {
@@ -12,8 +13,12 @@ abstract class AccessController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'denyCallback' => function () {
-                    return $this->redirect('/login');
+                'denyCallback' => function ($rule, $action) {
+                    if (\Yii::$app->user->isGuest) {
+                        return $this->redirect(['/login']);
+                    }
+
+                    throw new ForbiddenHttpException('У вас нет доступа к этой странице.');
                 },
                 'rules' => $this->getAccessRules(),
             ],

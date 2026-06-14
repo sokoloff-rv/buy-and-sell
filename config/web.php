@@ -14,7 +14,6 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // Ключ задаётся в config/params-local.php (см. params-local.php.example)
             'cookieValidationKey' => $params['cookieValidationKey'],
         ],
         'cache' => [
@@ -30,7 +29,7 @@ $config = [
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
-            // send all mails to a file by default.
+
             'useFileTransport' => true,
         ],
         'log' => [
@@ -48,6 +47,18 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '' => 'main/index',
+                'register' => 'register/index',
+                'login' => 'login/index',
+                'login/vk' => 'login/vk',
+                'login/vk-auth' => 'login/vk-auth',
+                'search' => 'search/index',
+                'offers/add' => 'offers/add',
+                'offers/edit/<id:\d+>' => 'offers/edit',
+                'offers/category/<id:\d+>' => 'offers/category',
+                'offers/<id:\d+>' => 'offers/index',
+                'my/comments' => 'my/comments',
+                'my/delete-comment/<id:\d+>' => 'my/delete-comment',
+                'my' => 'my/index',
             ],
         ],
         'authManager' => [
@@ -73,19 +84,17 @@ $config = [
 ];
 
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
+
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+
     ];
 }
 

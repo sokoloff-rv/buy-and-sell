@@ -13,7 +13,7 @@ class LoginCest
         $I->fillField('input[name="LoginForm[username]"]', 'admin');
         $I->fillField('input[name="LoginForm[password]"]', 'admin');
         $I->click('login-button');
-        $I->wait(2); // wait for button to be clicked
+        $I->wait(2);
 
         $I->expectTo('see user info');
         $I->see('Logout');

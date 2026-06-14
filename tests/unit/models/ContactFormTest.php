@@ -7,9 +7,7 @@ use yii\mail\MessageInterface;
 
 class ContactFormTest extends \Codeception\Test\Unit
 {
-    /**
-     * @var \UnitTester
-     */
+
     public $tester;
 
     public function testEmailIsSentOnContact()
@@ -26,10 +24,8 @@ class ContactFormTest extends \Codeception\Test\Unit
 
         verify($model->contact('admin@example.com'))->notEmpty();
 
-        // using Yii2 module actions to check email was sent
         $this->tester->seeEmailIsSent();
 
-        /** @var MessageInterface $emailMessage */
         $emailMessage = $this->tester->grabLastSentEmail();
         verify($emailMessage)->instanceOf('yii\mail\MessageInterface');
         verify($emailMessage->getTo())->arrayHasKey('admin@example.com');

@@ -2,14 +2,9 @@
 
 use yii\db\Migration;
 
-/**
- * Class m230629_140410_add_missing_fields
- */
 class m230629_140410_add_missing_fields extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function safeUp()
     {
         $this->addColumn('{{%users}}', 'surname', $this->string()->notNull()->after('name'));
@@ -31,9 +26,6 @@ class m230629_140410_add_missing_fields extends Migration
         $this->addForeignKey('fk_user_roles_user_id', '{{%user_roles}}', 'user_id', '{{%users}}', 'id', 'CASCADE');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropForeignKey('fk_user_roles_user_id', '{{%user_roles}}');

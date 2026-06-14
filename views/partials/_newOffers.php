@@ -1,8 +1,5 @@
 <?php
 
-use app\models\Offer;
-
-$offers = Offer::find()->orderBy(['created_at' => SORT_DESC])->limit(8)->all();
 ?>
 
 <section class="tickets-list">

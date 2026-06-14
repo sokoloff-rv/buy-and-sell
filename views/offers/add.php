@@ -62,7 +62,7 @@ $this->title = 'Новая публикация';
                 <div class="ticket-form__row">
                     <div class="form__field form__field--price">
                         <?= $form->field($newOfferForm, 'price', ['template' => "{input}\n{label}\n{hint}\n{error}"])
-                            ->input('number', ['id' => 'price-field', 'class' => 'js-field js-price', 'min' => 1, 'required' => true])
+                            ->input('number', ['id' => 'price-field', 'class' => 'js-field js-price', 'min' => 100, 'required' => true])
                             ->label('Цена') ?>
                         <span>Обязательное поле</span>
                     </div>

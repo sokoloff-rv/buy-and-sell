@@ -3,12 +3,30 @@
 namespace app\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\BadRequestHttpException;
 use app\models\User;
 use app\models\LoginForm;
 
 class LoginController extends Controller
 {
+    public function behaviors(): array
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+                'denyCallback' => fn () => $this->goHome(),
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $loginForm = new LoginForm();
@@ -18,7 +36,7 @@ class LoginController extends Controller
 
             if (!$user) {
                 $loginForm->addError('email', 'Такой пользователь не найден.');
-            } elseif (!Yii::$app->getSecurity()->validatePassword($loginForm->password, $user->password)) {
+            } elseif (!$user->password || !Yii::$app->getSecurity()->validatePassword($loginForm->password, $user->password)) {
                 $loginForm->addError('password', 'Введен неверный пароль.');
             } else {
                 Yii::$app->user->login($user);
@@ -42,7 +60,6 @@ class LoginController extends Controller
         $client = Yii::$app->authClientCollection->getClient("vkid");
 
         $code = Yii::$app->request->get('code');
-        // VK ID возвращает device_id на redirect; он обязателен при обмене кода на токен.
         $deviceId = Yii::$app->request->get('device_id');
         $accessToken = $client->fetchAccessToken($code, ['device_id' => $deviceId]);
         if (!$accessToken) {
@@ -55,13 +72,12 @@ class LoginController extends Controller
         }
 
         $vkId = $userAttributes['user_id'];
-        // VK ID отдаёт email не в user_info, а в ответе на обмен кода на токен.
         $email = $userAttributes['email'] ?? $accessToken->getParam('email');
+        if (!$email) {
+            throw new BadRequestHttpException('VK не передал email пользователя.');
+        }
         $userAttributes['email'] = $email;
 
-        // Сначала ищем по vk_id — он всегда присутствует в ответе VK ID.
-        // Если пользователя по vk_id нет, но есть email, связываем существующий
-        // аккаунт, ранее зарегистрированный по этой почте.
         $foundUser = User::findOne(['vk_id' => $vkId]);
         if (!$foundUser && $email) {
             $foundUser = User::findOne(['email' => $email]);
@@ -69,10 +85,13 @@ class LoginController extends Controller
 
         if ($foundUser) {
             $foundUser->vk_id = $vkId;
+            $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
+            $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
             if (!$foundUser->save()) {
                 throw new \Exception('Не удалось сохранить пользователя.');
             }
 
+            User::assignUserRole($foundUser->id);
             Yii::$app->user->login($foundUser);
         } else {
             $newUser = new User();

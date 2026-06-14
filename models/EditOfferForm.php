@@ -16,15 +16,19 @@ class EditOfferForm extends Model
     public string $type = '';
     public array $category_id = [];
     public array $imageFiles = [];
+    public bool $hasExistingImages = false;
 
     public function rules()
     {
         return [
+            [['title', 'description', 'price', 'type', 'category_id'], 'required'],
+            ['imageFiles', 'required', 'when' => fn (self $model): bool => !$model->hasExistingImages],
             [['title'], 'string', 'min' => 10, 'max' => 100],
             [['description'], 'string', 'min' => 50, 'max' => 1000],
             [['price'], 'number', 'min' => 100],
-            [['type'], 'safe'],
+            [['type'], 'in', 'range' => [Offer::TYPE_BUY, Offer::TYPE_SELL]],
             [['category_id'], 'each', 'rule' => ['integer']],
+            [['category_id'], 'each', 'rule' => ['exist', 'targetClass' => Category::class, 'targetAttribute' => 'id']],
             [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
         ];
     }
@@ -49,12 +53,17 @@ class EditOfferForm extends Model
             return false;
         }
 
+        $this->hasExistingImages = $offer->getImages()->exists();
+        $this->imageFiles = UploadedFile::getInstances($this, 'imageFiles');
+
         if ($this->validate()) {
             $offer->title = $this->title;
             $offer->description = $this->description;
             $offer->price = $this->price;
             $offer->type = $this->type;
-            $offer->save(false);
+            if (!$offer->save()) {
+                return false;
+            }
 
             $offer->unlinkAll('categories', true);
             foreach ($this->category_id as $categoryId) {
@@ -64,12 +73,11 @@ class EditOfferForm extends Model
                 }
             }
 
-            $imageFiles = UploadedFile::getInstances($this, 'imageFiles');
-            if ($imageFiles && !empty($imageFiles)) {
+            if ($this->imageFiles) {
                 Image::deleteAll(['offer_id' => $offerId]);
-                foreach ($imageFiles as $file) {
+                foreach ($this->imageFiles as $file) {
                     $newFileName = uniqid('upload') . '.' . $file->getExtension();
-                    $file->saveAs('@webroot/uploads/' . $newFileName);
+                    $file->saveAs(Yii::getAlias('@webroot/uploads/' . $newFileName));
                     $imagePath = '/uploads/' . $newFileName;
                     Image::saveImage($imagePath, $offer->id);
                 }

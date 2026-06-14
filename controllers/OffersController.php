@@ -4,12 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\data\ActiveDataProvider;
 use app\models\NewOfferForm;
-use app\models\ChatForm;
 use app\models\EditOfferForm;
 use app\models\NewCommentForm;
 use app\models\Offer;
+use app\models\Category;
 
 class OffersController extends AccessController
 {
@@ -31,33 +32,32 @@ class OffersController extends AccessController
 
     public function actionIndex($id)
     {
-        $offer = Offer::findOne($id);
-        $comments = $offer->comments;
-
+        $offer = Offer::find()->with(['images', 'categories', 'user'])->where(['id' => $id])->one();
         if ($offer === null) {
             throw new NotFoundHttpException('Объявление не найдено.');
         }
+        $comments = $offer->getComments()
+            ->with('user')
+            ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
+            ->all();
 
         $newCommentForm = new NewCommentForm();
         if (Yii::$app->request->isPost && $newCommentForm->load(Yii::$app->request->post())) {
+            if (Yii::$app->user->isGuest) {
+                throw new ForbiddenHttpException('Войдите, чтобы оставить комментарий.');
+            }
             if ($newCommentForm->createComment($id)) {
                 Yii::$app->session->setFlash('success', 'Комментарий успешно добавлен.');
-            } else {
-                Yii::$app->session->setFlash('error', 'Произошла ошибка при добавлении комментария.');
+                return $this->redirect(['offers/index', 'id' => $id]);
             }
-            return $this->refresh();
         }
-
-        $chatForm = new ChatForm();
 
         return $this->render('index', [
             'offer' => $offer,
             'comments' => $comments,
-            'chatForm' => $chatForm,
             'newCommentForm' => $newCommentForm,
         ]);
     }
-
 
     public function actionAdd()
     {
@@ -67,9 +67,7 @@ class OffersController extends AccessController
             $newOfferId = $newOfferForm->createOffer();
             if ($newOfferId) {
                 Yii::$app->session->setFlash('success', 'Объявление успешно добавлено.');
-                return Yii::$app->response->redirect(["/offers?id=$newOfferId"]);
-            } else {
-                Yii::$app->session->setFlash('error', 'Произошла ошибка при добавлении объявления.');
+                return $this->redirect(['/my']);
             }
         }
 
@@ -84,15 +82,23 @@ class OffersController extends AccessController
         if ($offer === null) {
             throw new NotFoundHttpException('Объявление не найдено.');
         }
+        if ($offer->user_id != Yii::$app->user->id) {
+            throw new ForbiddenHttpException('Редактировать объявление может только его автор.');
+        }
 
         $editOfferForm = new EditOfferForm();
+        $editOfferForm->setAttributes([
+            'title' => $offer->title,
+            'description' => $offer->description,
+            'price' => (int) $offer->price,
+            'type' => $offer->type,
+            'category_id' => array_column($offer->categories, 'id'),
+        ], false);
         if (Yii::$app->request->getIsPost()) {
             $editOfferForm->load(Yii::$app->request->post());
             if ($editOfferForm->updateOffer($offer->id)) {
                 Yii::$app->session->setFlash('success', 'Объявление успешно обновлено.');
-                return Yii::$app->response->redirect(["/offers?id=$id"]);
-            } else {
-                Yii::$app->session->setFlash('error', 'Произошла ошибка при обновлении объявления.');
+                return $this->redirect(['offers/index', 'id' => $id]);
             }
         }
 
@@ -108,18 +114,26 @@ class OffersController extends AccessController
         if (!$offer) {
             throw new NotFoundHttpException('Объявление не найдено.');
         }
+        if ($offer->user_id != Yii::$app->user->id && !Yii::$app->user->can('moderator')) {
+            throw new ForbiddenHttpException('Нельзя удалить чужое объявление.');
+        }
         $offer->delete();
 
-        $referrer = Yii::$app->request->referrer;
-        return $this->redirect($referrer);
+        return $this->redirect(['/my']);
     }
 
     public function actionCategory($id)
     {
+        $category = Category::findOne($id);
+        if ($category === null) {
+            throw new NotFoundHttpException('Категория не найдена.');
+        }
+
         $query = Offer::find()
+            ->with(['images', 'categories'])
             ->joinWith('categories')
-            ->where(['category_id' => $id])
-            ->orderBy(['created_at' => SORT_DESC]);
+            ->where(['categories.id' => $id])
+            ->orderBy(['offers.created_at' => SORT_DESC, 'offers.id' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -131,6 +145,8 @@ class OffersController extends AccessController
         return $this->render('category', [
             'offers' => $dataProvider->getModels(),
             'pagination' => $dataProvider->getPagination(),
+            'category' => $category,
+            'categories' => Category::findWithOfferCounts(false),
         ]);
     }
 }

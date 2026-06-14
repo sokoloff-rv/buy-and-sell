@@ -1,9 +1,5 @@
 <?php
 
-use app\models\Offer;
-
-$offers = Offer::getMostDiscussed();
-
 if (count($offers)) :
 ?>
 

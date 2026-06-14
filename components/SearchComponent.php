@@ -10,9 +10,8 @@ class SearchComponent extends \yii\base\Component
     {
         $searchModel = new SearchForm();
 
-        if ($searchModel->load(\Yii::$app->request->get()) && $searchModel->validate()) {
-            // логика поиска
-        }
+        $searchModel->load(\Yii::$app->request->get());
+        $searchModel->validate();
 
         return $searchModel;
     }
