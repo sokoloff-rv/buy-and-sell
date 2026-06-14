@@ -7,11 +7,11 @@ class m230715_072521_remove_user_surname extends Migration
 
     public function safeUp()
     {
-        $this->dropColumn('users', 'surname');
+        $this->dropColumn('{{%users}}', 'surname');
     }
 
     public function safeDown()
     {
-        $this->addColumn('users', 'surname', $this->string()->notNull());
+        $this->addColumn('{{%users}}', 'surname', $this->string()->notNull());
     }
 }
