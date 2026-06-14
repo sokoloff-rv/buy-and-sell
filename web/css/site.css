@@ -1243,8 +1243,8 @@ input[type=search]::-webkit-search-cancel-button {
     text-align: center;
     font-size: 13px;
     line-height: 16px;
-    color: inherit;
-    background-color: rgba(0, 0, 0, .08)
+    color: #fff;
+    background-color: #d6383a
 }
 
 .ticket-card--color01 {
