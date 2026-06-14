@@ -96,7 +96,7 @@ $action = Yii::$app->controller->action->id;
             <div class="page-footer__col">
                 <a href="<?= Url::to(['/main/index']) ?>" class="page-footer__logo-academy" aria-label="Ссылка на главную страницу">
                     <svg width="132" height="46">
-                        <use xlink:href="img/sprite_auto.svg#logo-htmlac"></use>
+                        <use xlink:href="/img/sprite_auto.svg#logo-htmlac"></use>
                     </svg>
                 </a>
                 <p class="page-footer__copyright">© 2019 Проект Академии</p>
