@@ -1247,6 +1247,65 @@ input[type=search]::-webkit-search-cancel-button {
     background-color: #d6383a
 }
 
+.ticket-card__actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin-top: auto;
+    background-color: #fff
+}
+
+.ticket-card__action-form {
+    margin: 0
+}
+
+.ticket-card__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 42px;
+    padding: 10px;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    transition: opacity .3s ease-out
+}
+
+.ticket-card__action:hover {
+    color: #fff;
+    opacity: .8
+}
+
+.ticket-card__action:active,
+.ticket-card__action:focus {
+    color: #fff;
+    opacity: .65;
+    outline: 0
+}
+
+.ticket-card__action svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round
+}
+
+.ticket-card__action--view {
+    background-color: #2f9e44
+}
+
+.ticket-card__action--edit {
+    background-color: #2b51a6
+}
+
+.ticket-card__action--delete {
+    background-color: #d6383a
+}
+
 .ticket-card--color01 {
     background-color: #f8bc7f
 }

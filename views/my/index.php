@@ -15,7 +15,7 @@ $this->title = 'Мои объявления';
         <ul>
             <?php foreach ($offers as $offer) : ?>
                 <li class="tickets-list__item js-card">
-                    <?= $this->render('../partials/_offerCard', ['offer' => $offer, 'showDeleteButton' => true]) ?>
+                    <?= $this->render('../partials/_offerCard', ['offer' => $offer, 'showActions' => true]) ?>
                 </li>
             <?php endforeach; ?>
         </ul>
