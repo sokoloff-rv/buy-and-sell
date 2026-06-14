@@ -92,7 +92,6 @@
       }
     };
 
-    //валидация поля email
     var validateEmailInput = function (input) {
       var flag = true;
       var emailString = /[a-zA-Zа-яёА-ЯЁ0-9]{1}([a-zA-Zа-яёА-ЯЁ0-9\-_\.]{1,})?@[a-zA-Zа-яёА-ЯЁ0-9\-]{1}([a-zA-Zа-яёА-ЯЁ0-9.\-]{1,})?[a-zA-Zа-яёА-ЯЁ0-9\-]{1}\.[a-zA-Zа-яёА-ЯЁ]{2,6}/;
@@ -118,7 +117,6 @@
     };
 
     if (userNameField && userEmailField && userPassword && userPasswordAgain) {
-      // включаем ограничения для ввода поля имя пользователя
       validateNameInput(userNameField);
 
       userEmailField.addEventListener('input', function () {

@@ -2,14 +2,9 @@
 
 use yii\db\Migration;
 
-/**
- * Class m230629_134735_initial
- */
 class m230629_134735_initial extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function safeUp()
     {
         $tableOptions = null;
@@ -68,9 +63,6 @@ class m230629_134735_initial extends Migration
         $this->addForeignKey('fk_comments_offer_id', '{{%comments}}', 'offer_id', '{{%offers}}', 'id', 'CASCADE');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropForeignKey('fk_comments_offer_id', '{{%comments}}');

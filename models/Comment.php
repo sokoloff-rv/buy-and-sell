@@ -4,32 +4,14 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "comments".
- *
- * @property int $id
- * @property int $user_id
- * @property int $offer_id
- * @property string $text
- * @property string $created_at
- * @property string $updated_at
- *
- * @property Offer $offer
- * @property User $user
- */
 class Comment extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public static function tableName()
     {
         return 'comments';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -42,9 +24,6 @@ class Comment extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -57,21 +36,11 @@ class Comment extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Offer]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getOffer()
     {
         return $this->hasOne(Offer::class, ['id' => 'offer_id']);
     }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
