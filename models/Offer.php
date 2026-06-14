@@ -4,39 +4,16 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "offers".
- *
- * @property int $id
- * @property int $user_id
- * @property string $title
- * @property string $description
- * @property string $type
- * @property float $price
- * @property string $created_at
- * @property string $updated_at
- *
- * @property Comment[] $comments
- * @property Image[] $images
- * @property Category[] $categories
- * @property User $user
- */
 class Offer extends \yii\db\ActiveRecord
 {
     const TYPE_SELL = 'sell';
     const TYPE_BUY = 'buy';
 
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return 'offers';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -50,9 +27,6 @@ class Offer extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -67,42 +41,23 @@ class Offer extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Comments]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getComments()
     {
-        return $this->hasMany(Comment::class, ['offer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['offer_id' => 'id'])
+            ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC]);
     }
 
-    /**
-     * Gets query for [[Images]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getImages()
     {
         return $this->hasMany(Image::class, ['offer_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Categories]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getCategories()
     {
         return $this->hasMany(Category::class, ['id' => 'category_id'])
             ->viaTable('offer_categories', ['offer_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
@@ -115,16 +70,25 @@ class Offer extends \yii\db\ActiveRecord
 
     public static function getMostDiscussed($limit = 4)
     {
-        $offers = self::find()->with('comments')->all();
+        return self::find()
+            ->alias('offers')
+            ->with(['images', 'categories'])
+            ->innerJoin('comments', 'comments.offer_id = offers.id')
+            ->groupBy('offers.id')
+            ->orderBy(['COUNT(comments.id)' => SORT_DESC, 'offers.created_at' => SORT_DESC])
+            ->limit($limit)
+            ->all();
+    }
 
-        $offers = array_filter($offers, function ($offer) {
-            return count($offer->comments) > 0;
-        });
+    public function getPreviewImage(): string
+    {
+        return $this->images[0]->image_path ?? '/img/blank.png';
+    }
 
-        usort($offers, function ($a, $b) {
-            return count($b->comments) <=> count($a->comments);
-        });
-
-        return array_slice($offers, 0, $limit);
+    public function getAnnouncement(): string
+    {
+        return mb_strlen($this->description) > 55
+            ? mb_substr($this->description, 0, 54) . '…'
+            : $this->description;
     }
 }

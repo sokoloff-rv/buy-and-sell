@@ -13,6 +13,7 @@ class NewCommentForm extends Model
     {
         return [
             [['text'], 'required'],
+            ['text', 'string', 'min' => 20],
         ];
     }
 
@@ -38,7 +39,7 @@ class NewCommentForm extends Model
     {
         if ($this->validate()) {
             $newComment = $this->newComment($offerId);
-            if ($newComment->save(false)) {
+            if ($newComment->save()) {
                 return $newComment->id;
             }
         }

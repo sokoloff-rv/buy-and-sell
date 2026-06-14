@@ -11,9 +11,11 @@ $this->title = $offer->title;
     <div class="ticket__wrapper">
         <h1 class="visually-hidden">Карточка объявления</h1>
         <div class="ticket__content">
-            <div class="ticket__img">
-                <img src="<?= Html::encode($offer->images[0]->image_path) ?>" alt="Изображение товара">
-            </div>
+            <?php foreach ($offer->images as $image) : ?>
+                <div class="ticket__img">
+                    <img src="<?= Html::encode($image->image_path) ?>" alt="Изображение товара">
+                </div>
+            <?php endforeach; ?>
             <div class="ticket__info">
                 <h2 class="ticket__title"><?= Html::encode($offer->title) ?></h2>
                 <div class="ticket__header">
@@ -26,7 +28,7 @@ $this->title = $offer->title;
                 <div class="ticket__data">
                     <p>
                         <b>Дата добавления:</b>
-                        <span><?= Yii::$app->formatter->asDate($offer->created_at, 'long') ?></span>
+                        <span><?= Yii::$app->formatter->asDate($offer->created_at, 'dd MMMM yyyy') ?></span>
                     </p>
                     <p>
                         <b>Автор:</b>
@@ -42,7 +44,7 @@ $this->title = $offer->title;
                         <li>
                             <a href="<?= Url::to(['offers/category/', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
-                                    <img src="<?= $category->image ?>" alt="Иконка категории">
+                                    <img src="<?= Html::encode($category->randomImageUrl) ?>" alt="Иконка категории">
                                 </span>
                                 <span class="category-tile__label"><?= Html::encode($category->name) ?></span>
                             </a>
@@ -50,14 +52,23 @@ $this->title = $offer->title;
                     <?php endforeach; ?>
                 </ul>
             </div>
+            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
+                <?= Html::a('Удалить объявление', ['/offers/delete', 'id' => $offer->id], ['class' => 'btn btn--small']) ?>
+            <?php endif; ?>
         </div>
         <div class="ticket__comments">
-            <h2 class="ticket__subtitle">Коментарии</h2>
-            <div class="ticket__comment-form">
+            <h2 class="ticket__subtitle">Комментарии</h2>
+            <?php if (Yii::$app->user->isGuest) : ?>
+                <div class="ticket__comment-form">
+                    <p>Отправка комментариев доступна только для зарегистрированных пользователей.</p>
+                    <?= Html::a('Вход и регистрация', ['/login']) ?>
+                </div>
+            <?php else : ?>
+                <div class="ticket__comment-form">
                 <?php $form = ActiveForm::begin(['options' => ['class' => 'form comment-form']]); ?>
                 <div class="comment-form__header">
                     <a href="#" class="comment-form__avatar avatar">
-                        <img src="/<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
+                        <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
                     </a>
                     <p class="comment-form__author">Вам слово</p>
                 </div>
@@ -71,7 +82,8 @@ $this->title = $offer->title;
                 </div>
                 <?= Html::submitButton('Отправить', ['class' => 'comment-form__button btn btn--white js-button', 'disabled' => true]) ?>
                 <?php ActiveForm::end(); ?>
-            </div>
+                </div>
+            <?php endif; ?>
             <div class="ticket__comments-list">
                 <ul class="comments-list">
                     <?php foreach ($comments as $comment) : ?>
@@ -79,45 +91,23 @@ $this->title = $offer->title;
                             <div class="comment-card">
                                 <div class="comment-card__header">
                                     <a href="#" class="comment-card__avatar avatar">
-                                        <img src="<?= $comment->user->avatar ?>" alt="Аватар пользователя">
+                                        <img src="<?= Html::encode($comment->user->avatarUrl) ?>" alt="Аватар пользователя">
                                     </a>
                                     <p class="comment-card__author">
-                                        <?= $comment->user->name; ?>
+                                        <?= Html::encode($comment->user->name) ?>
                                     </p>
                                 </div>
                                 <div class="comment-card__content">
-                                    <p><?= $comment->text; ?></p>
+                                    <p><?= Html::encode($comment->text) ?></p>
                                 </div>
+                                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
+                                    <?= Html::a('Удалить', ['/my/delete-comment', 'id' => $comment->id], ['class' => 'comment-card__delete js-delete']) ?>
+                                <?php endif; ?>
                             </div>
                         </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
         </div>
-        <button class="chat-button" type="button" aria-label="Открыть окно чата"></button>
     </div>
-</section>
-
-<section class="chat visually-hidden">
-    <h2 class="chat__subtitle">Чат с продавцом</h2>
-    <ul class="chat__conversation">
-        <!-- Здесь будут сообщения -->
-    </ul>
-
-    <?php $form = ActiveForm::begin([
-        'options' => ['class' => 'chat__form'],
-        'fieldConfig' => [
-            'template' => "{label}\n{input}\n{hint}\n{error}",
-            'options' => ['tag' => false],
-        ],
-    ]); ?>
-
-        <?= $form->field($chatForm, 'message', [
-            'labelOptions' => ['class' => 'visually-hidden'],
-            'inputOptions' => ['id' => 'chat-field', 'class' => 'chat__form-message', 'placeholder' => 'Ваше сообщение'],
-        ])->textarea()->label('Ваше сообщение в чат') ?>
-
-        <?= Html::submitButton('', ['class' => 'chat__form-button', 'aria-label' => 'Отправить сообщение в чат']) ?>
-
-    <?php ActiveForm::end(); ?>
 </section>

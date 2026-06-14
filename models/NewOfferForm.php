@@ -24,7 +24,9 @@ class NewOfferForm extends Model
             [['title'], 'string', 'min' => 10, 'max' => 100],
             [['description'], 'string', 'min' => 50, 'max' => 1000],
             [['price'], 'number', 'min' => 100],
+            [['type'], 'in', 'range' => [Offer::TYPE_BUY, Offer::TYPE_SELL]],
             [['category_id'], 'each', 'rule' => ['integer']],
+            [['category_id'], 'each', 'rule' => ['exist', 'targetClass' => Category::class, 'targetAttribute' => 'id']],
             [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
         ];
     }
@@ -56,21 +58,23 @@ class NewOfferForm extends Model
 
     public function createOffer(): int|bool
     {
-        $imageFiles = UploadedFile::getInstances($this, 'imageFiles');
+        $this->imageFiles = UploadedFile::getInstances($this, 'imageFiles');
 
         if ($this->validate()) {
             $newOffer = $this->newOffer();
-            $newOffer->save(false);
+            if (!$newOffer->save()) {
+                return false;
+            }
             foreach ($this->category_id as $categoryId) {
                 $category = Category::findOne($categoryId);
                 if ($category) {
                     $newOffer->link('categories', $category);
                 }
             }
-            if ($imageFiles) {
-                foreach ($imageFiles as $file) {
+            if ($this->imageFiles) {
+                foreach ($this->imageFiles as $file) {
                     $newFileName = uniqid('upload') . '.' . $file->getExtension();
-                    $file->saveAs('@webroot/uploads/' . $newFileName);
+                    $file->saveAs(Yii::getAlias('@webroot/uploads/' . $newFileName));
                     $imagePath = '/uploads/' . $newFileName;
                     Image::saveImage($imagePath, $newOffer->id);
                 }
@@ -80,5 +84,5 @@ class NewOfferForm extends Model
 
         return false;
     }
-    
+
 }

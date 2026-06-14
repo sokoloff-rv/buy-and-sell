@@ -1,8 +1,5 @@
 <?php
 
-/** @var yii\web\View $this */
-/** @var string $content */
-
 use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
@@ -40,6 +37,7 @@ $action = Yii::$app->controller->action->id;
             <a class="header__logo logo" href="/">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
+            <?php if (!Yii::$app->user->isGuest) : ?>
             <nav class="header__user-menu">
                 <ul class="header__list">
                     <li class="header__item <?= ($controller == 'my' && $action == 'index') ? 'header__item--active' : '' ?>">
@@ -50,6 +48,7 @@ $action = Yii::$app->controller->action->id;
                     </li>
                 </ul>
             </nav>
+            <?php endif; ?>
 
             <?php
             $searchModel = Yii::$app->search->getSearchModel();
@@ -65,12 +64,11 @@ $action = Yii::$app->controller->action->id;
             ])->textInput(['placeholder' => 'Поиск', 'aria-label' => 'Поиск']) ?>
             <?php ActiveForm::end(); ?>
 
-
             <?php if (Yii::$app->user->isGuest) : ?>
-                <a class="header__input" href="/register">Вход и регистрация</a>
+                <a class="header__input" href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
             <?php else : ?>
                 <a class="header__avatar avatar" href="#">
-                    <img src="/<?= Yii::$app->user->identity->avatar ?>" alt="Аватар пользователя">
+                    <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
                 </a>
             <?php endif; ?>
         </div>
@@ -102,10 +100,10 @@ $action = Yii::$app->controller->action->id;
             <div class="page-footer__col">
                 <ul class="page-footer__nav">
                     <li>
-                        <a href="/">Вход и регистрация</a>
+                        <a href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
                     </li>
                     <li>
-                        <a href="/">Создать объявление</a>
+                        <a href="<?= Url::to(['/offers/add']) ?>">Создать объявление</a>
                     </li>
                 </ul>
             </div>

@@ -7,7 +7,6 @@ use app\models\Category;
 use yii\helpers\ArrayHelper;
 
 $this->title = 'Редактирование объявления';
-$offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
 ?>
 
 <section class="ticket-form">
@@ -19,10 +18,13 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
 
             <div class="ticket-form__avatar-container js-preview-container uploaded">
                 <div class="ticket-form__avatar js-preview">
-                    <img src="<?= $offer->images[0]->image_path ?>" alt="">
+                    <img src="<?= Html::encode($offer->previewImage) ?>" alt="">
                 </div>
                 <div class="ticket-form__field-avatar">
-                    <?= $form->field($editOfferForm, 'imageFiles[]', ['template' => "{input}\n{label}\n{hint}\n{error}"])
+                    <?= $form->field($editOfferForm, 'imageFiles[]', [
+                        'template' => "{input}\n{label}\n{hint}\n{error}",
+                        'enableClientValidation' => false,
+                    ])
                         ->fileInput(['id' => 'avatar', 'class' => 'visually-hidden js-file-field', 'multiple' => true])
                         ->label('<span class="ticket-form__text-upload">Загрузить фото…</span><span class="ticket-form__text-another">Загрузить другое фото…</span>') ?>
                 </div>
@@ -32,7 +34,7 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
                 <div class="ticket-form__row">
                     <div class="form__field">
                         <?= $form->field($editOfferForm, 'title', ['template' => "{input}\n{label}\n{hint}\n{error}"])
-                            ->textInput(['id' => 'ticket-name', 'class' => 'js-field', 'required' => true, 'value' => $offer->title])
+                            ->textInput(['id' => 'ticket-name', 'class' => 'js-field', 'required' => true])
                             ->label('Название') ?>
                         <span>Обязательное поле</span>
                     </div>
@@ -41,7 +43,7 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
                 <div class="ticket-form__row">
                     <div class="form__field">
                         <?= $form->field($editOfferForm, 'description', ['template' => "{input}\n{label}\n{hint}\n{error}"])
-                            ->textarea(['id' => 'comment-field', 'class' => 'js-field', 'cols' => 30, 'rows' => 10, 'value' => $offer->description])
+                            ->textarea(['id' => 'comment-field', 'class' => 'js-field', 'cols' => 30, 'rows' => 10])
                             ->label('Описание') ?>
                         <span>Обязательное поле</span>
                     </div>
@@ -57,8 +59,7 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
                             'prompt' => 'Выбрать категорию публикации',
                             'class' => 'form__select js-multiple-select',
                             'data-label' => 'Выбрать категорию публикации',
-                            'id' => 'category-field',
-                            'options' => array_combine($offerCategories, array_fill(0, count($offerCategories), ['selected' => true]))
+                            'id' => 'category-field'
                         ]
                     ) ?>
                 </div>
@@ -66,7 +67,7 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
                 <div class="ticket-form__row">
                     <div class="form__field form__field--price">
                         <?= $form->field($editOfferForm, 'price', ['template' => "{input}\n{label}\n{hint}\n{error}"])
-                            ->input('number', ['id' => 'price-field', 'class' => 'js-field js-price', 'min' => 1, 'required' => true, 'value' => round($offer->price, 0)])
+                            ->input('number', ['id' => 'price-field', 'class' => 'js-field js-price', 'min' => 100, 'required' => true])
                             ->label('Цена') ?>
                         <span>Обязательное поле</span>
                     </div>
@@ -85,8 +86,7 @@ $offerCategories = ArrayHelper::getColumn($offer->categories, 'id');
                                 return $return;
                             },
                             'tag' => 'div',
-                            'class' => 'form__switch switch',
-                            'value' => $offer->type
+                            'class' => 'form__switch switch'
                         ]
                     ) ?>
 

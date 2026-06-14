@@ -25,7 +25,7 @@ $this->title = 'Авторизация';
         'template' => '<div class="form__field login__field">{input}{label}{error}</div>',
         'inputOptions' => ['class' => 'js-field', 'id' => 'user-password'],
         'labelOptions' => ['for' => 'user-password'],
-    ])->passwordInput()->label('Пароль') ?>
+    ])->passwordInput(['value' => ''])->label('Пароль') ?>
 
     <?= Html::submitButton('Войти', ['class' => 'login__button btn btn--medium js-button']) ?>
     <a class="btn btn--small btn--flex btn--white" href="/login/vk?authclient=vkontakte">
