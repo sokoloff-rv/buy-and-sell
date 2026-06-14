@@ -7,9 +7,22 @@ use app\models\Offer;
 use app\models\Comment;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
 class MyController extends AccessController
 {
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete-comment' => ['POST'],
+                ],
+            ],
+        ]);
+    }
+
     public function actionIndex()
     {
         $userId = Yii::$app->user->id;
@@ -45,7 +58,8 @@ class MyController extends AccessController
         }
 
         usort($offersWithComments, function ($a, $b) {
-            return $b['comments'][0]->created_at <=> $a['comments'][0]->created_at;
+            $dateComparison = $b['comments'][0]->created_at <=> $a['comments'][0]->created_at;
+            return $dateComparison ?: $b['offer']->id <=> $a['offer']->id;
         });
 
         return $this->render('comments', [
@@ -60,11 +74,13 @@ class MyController extends AccessController
         if ($comment === null) {
             throw new NotFoundHttpException('Комментарий не найден.');
         }
-        if ($comment->offer->user_id != Yii::$app->user->id && !Yii::$app->user->can('moderator')) {
+        if ($comment->offer->user_id != Yii::$app->user->id && !Yii::$app->user->can('deleteComment')) {
             throw new ForbiddenHttpException('Нельзя удалить комментарий к чужому объявлению.');
         }
 
-        $comment->delete();
+        if ($comment->delete() === false) {
+            throw new \RuntimeException('Не удалось удалить комментарий.');
+        }
         Yii::$app->session->setFlash('success', 'Комментарий успешно удален.');
 
         return $this->redirect(['comments']);

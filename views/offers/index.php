@@ -42,7 +42,7 @@ $this->title = $offer->title;
                 <ul class="ticket__tags">
                     <?php foreach ($offer->categories as $category) : ?>
                         <li>
-                            <a href="<?= Url::to(['offers/category/', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
+                            <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
                                     <img src="<?= Html::encode($category->randomImageUrl) ?>" alt="Иконка категории">
                                 </span>
@@ -52,8 +52,10 @@ $this->title = $offer->title;
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
-                <?= Html::a('Удалить объявление', ['/offers/delete', 'id' => $offer->id], ['class' => 'btn btn--small']) ?>
+            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('deleteOffer')) : ?>
+                <?= Html::beginForm(['/offers/delete', 'id' => $offer->id], 'post') ?>
+                <?= Html::submitButton('Удалить объявление', ['class' => 'btn btn--small']) ?>
+                <?= Html::endForm() ?>
             <?php endif; ?>
         </div>
         <div class="ticket__comments">
@@ -100,8 +102,10 @@ $this->title = $offer->title;
                                 <div class="comment-card__content">
                                     <p><?= Html::encode($comment->text) ?></p>
                                 </div>
-                                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
-                                    <?= Html::a('Удалить', ['/my/delete-comment', 'id' => $comment->id], ['class' => 'comment-card__delete js-delete']) ?>
+                                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('deleteComment')) : ?>
+                                    <?= Html::beginForm(['/my/delete-comment', 'id' => $comment->id], 'post') ?>
+                                    <?= Html::submitButton('Удалить', ['class' => 'comment-card__delete js-delete']) ?>
+                                    <?= Html::endForm() ?>
                                 <?php endif; ?>
                             </div>
                         </li>

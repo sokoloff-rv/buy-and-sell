@@ -27,6 +27,8 @@ use yii\helpers\Html;
         </div>
     </div>
     <?php if (isset($showDeleteButton) && $showDeleteButton): ?>
-        <a href="<?= \yii\helpers\Url::to(['offers/delete', 'id' => $offer->id]) ?>" class="ticket-card__del js-delete" type="button">Удалить</a>
+        <?= Html::beginForm(['/offers/delete', 'id' => $offer->id], 'post') ?>
+        <?= Html::submitButton('Удалить', ['class' => 'ticket-card__del js-delete']) ?>
+        <?= Html::endForm() ?>
     <?php endif; ?>
 </div>
