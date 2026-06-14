@@ -29,7 +29,7 @@ class EditOfferForm extends Model
             [['type'], 'in', 'range' => [Offer::TYPE_BUY, Offer::TYPE_SELL]],
             [['category_id'], 'each', 'rule' => ['integer']],
             [['category_id'], 'each', 'rule' => ['exist', 'targetClass' => Category::class, 'targetAttribute' => 'id']],
-            [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'maxFiles' => 5],
+            [['imageFiles'], 'file', 'extensions' => 'png, jpg', 'mimeTypes' => 'image/png, image/jpeg', 'checkExtensionByMimeType' => true, 'maxFiles' => 5],
         ];
     }
 
@@ -56,36 +56,70 @@ class EditOfferForm extends Model
         $this->hasExistingImages = $offer->getImages()->exists();
         $this->imageFiles = UploadedFile::getInstances($this, 'imageFiles');
 
-        if ($this->validate()) {
+        if (!$this->validate()) {
+            return false;
+        }
+
+        $newPaths = [];
+        $oldPaths = [];
+        $staged = [];
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if ($this->imageFiles) {
+                $newPaths = Yii::$app->imageStorage->saveMany($this->imageFiles);
+                $oldPaths = array_column($offer->images, 'image_path');
+                $staged = Yii::$app->imageStorage->stageDeletion($oldPaths);
+            }
             $offer->title = $this->title;
             $offer->description = $this->description;
             $offer->price = $this->price;
             $offer->type = $this->type;
             if (!$offer->save()) {
-                return false;
+                throw new \RuntimeException('Не удалось сохранить объявление.');
             }
 
             $offer->unlinkAll('categories', true);
             foreach ($this->category_id as $categoryId) {
                 $category = Category::findOne($categoryId);
-                if ($category) {
-                    $offer->link('categories', $category);
+                if (!$category) {
+                    throw new \RuntimeException('Категория не найдена.');
                 }
+                $offer->link('categories', $category);
             }
 
             if ($this->imageFiles) {
-                Image::deleteAll(['offer_id' => $offerId]);
-                foreach ($this->imageFiles as $file) {
-                    $newFileName = uniqid('upload') . '.' . $file->getExtension();
-                    $file->saveAs(Yii::getAlias('@webroot/uploads/' . $newFileName));
-                    $imagePath = '/uploads/' . $newFileName;
-                    Image::saveImage($imagePath, $offer->id);
+                if (Image::deleteAll(['offer_id' => $offerId]) !== count($oldPaths)) {
+                    throw new \RuntimeException('Не удалось заменить изображения объявления.');
+                }
+                foreach ($newPaths as $imagePath) {
+                    if (!Image::saveImage($imagePath, $offer->id)) {
+                        throw new \RuntimeException('Не удалось сохранить изображение объявления.');
+                    }
                 }
             }
 
-            return true;
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            if ($transaction->isActive) {
+                $transaction->rollBack();
+            }
+            Yii::$app->imageStorage->deleteMany($newPaths);
+            try {
+                Yii::$app->imageStorage->restoreStaged($staged);
+            } catch (\Throwable $restoreException) {
+                Yii::error($restoreException);
+            }
+            Yii::error($exception);
+            $this->addError('imageFiles', 'Не удалось сохранить объявление.');
+            return false;
         }
 
-        return false;
+        try {
+            Yii::$app->imageStorage->purgeStaged($staged);
+        } catch (\Throwable $exception) {
+            Yii::warning($exception);
+        }
+
+        return true;
     }
 }

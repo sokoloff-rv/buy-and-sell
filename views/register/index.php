@@ -45,9 +45,8 @@ $this->title = 'Регистрация';
             'labelOptions' => ['for' => 'user-password-again'],
         ])->passwordInput()->label('Пароль еще раз') ?>
         <?= Html::submitButton('Создать аккаунт', ['class' => 'sign-up__button btn btn--medium js-button']) ?>
-        <a class="btn btn--small btn--flex btn--white" href="/login/vk?authclient=vkontakte">
-            Войти через
-            <span class="icon icon--vk"></span>
-        </a>
+        <?= Html::a('Войти через <span class="icon icon--vk"></span>', ['/login/vk'], [
+            'class' => 'btn btn--small btn--flex btn--white',
+        ]) ?>
     <?php ActiveForm::end(); ?>
 </section>

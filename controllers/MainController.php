@@ -19,7 +19,7 @@ class MainController extends Controller
             ->all();
 
         return $this->render('index', [
-            'categories' => Category::findWithOfferCounts(true),
+            'categories' => Category::findWithOfferCounts(),
             'newOffers' => $newOffers,
             'mostDiscussed' => Offer::getMostDiscussed(8),
         ]);
@@ -44,6 +44,7 @@ class MainController extends Controller
                 return $this->render('error4xx', ['statusCode' => $statusCode]);
             }
 
+            Yii::error($exception);
             Yii::$app->response->statusCode = 500;
             return $this->render('error500');
         }

@@ -6,6 +6,7 @@ use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use app\models\NewOfferForm;
 use app\models\EditOfferForm;
 use app\models\NewCommentForm;
@@ -14,6 +15,18 @@ use app\models\Category;
 
 class OffersController extends AccessController
 {
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ]);
+    }
+
     public function getAccessRules(): array
     {
         return [
@@ -32,10 +45,7 @@ class OffersController extends AccessController
 
     public function actionIndex($id)
     {
-        $offer = Offer::find()->with(['images', 'categories', 'user'])->where(['id' => $id])->one();
-        if ($offer === null) {
-            throw new NotFoundHttpException('Объявление не найдено.');
-        }
+        $offer = $this->findOffer($id, ['images', 'categories', 'user']);
         $comments = $offer->getComments()
             ->with('user')
             ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
@@ -78,13 +88,8 @@ class OffersController extends AccessController
 
     public function actionEdit($id)
     {
-        $offer = Offer::findOne($id);
-        if ($offer === null) {
-            throw new NotFoundHttpException('Объявление не найдено.');
-        }
-        if ($offer->user_id != Yii::$app->user->id) {
-            throw new ForbiddenHttpException('Редактировать объявление может только его автор.');
-        }
+        $offer = $this->findOffer($id);
+        $this->ensureOwner($offer);
 
         $editOfferForm = new EditOfferForm();
         $editOfferForm->setAttributes([
@@ -110,14 +115,9 @@ class OffersController extends AccessController
 
     public function actionDelete($id)
     {
-        $offer = Offer::findOne($id);
-        if (!$offer) {
-            throw new NotFoundHttpException('Объявление не найдено.');
-        }
-        if ($offer->user_id != Yii::$app->user->id && !Yii::$app->user->can('moderator')) {
-            throw new ForbiddenHttpException('Нельзя удалить чужое объявление.');
-        }
-        $offer->delete();
+        $offer = $this->findOffer($id, ['images']);
+        $this->ensureCanDelete($offer);
+        $offer->deleteWithFiles();
 
         return $this->redirect(['/my']);
     }
@@ -130,8 +130,9 @@ class OffersController extends AccessController
         }
 
         $query = Offer::find()
+            ->alias('offers')
             ->with(['images', 'categories'])
-            ->joinWith('categories')
+            ->joinWith(['categories categories'])
             ->where(['categories.id' => $id])
             ->orderBy(['offers.created_at' => SORT_DESC, 'offers.id' => SORT_DESC]);
 
@@ -146,7 +147,35 @@ class OffersController extends AccessController
             'offers' => $dataProvider->getModels(),
             'pagination' => $dataProvider->getPagination(),
             'category' => $category,
-            'categories' => Category::findWithOfferCounts(false),
+            'categories' => Category::findWithOfferCounts(),
         ]);
+    }
+
+    private function findOffer(int $id, array $with = []): Offer
+    {
+        $query = Offer::find()->where(['id' => $id]);
+        if ($with) {
+            $query->with($with);
+        }
+        $offer = $query->one();
+        if ($offer === null) {
+            throw new NotFoundHttpException('Объявление не найдено.');
+        }
+
+        return $offer;
+    }
+
+    private function ensureOwner(Offer $offer): void
+    {
+        if ($offer->user_id != Yii::$app->user->id) {
+            throw new ForbiddenHttpException('Редактировать объявление может только его автор.');
+        }
+    }
+
+    private function ensureCanDelete(Offer $offer): void
+    {
+        if ($offer->user_id != Yii::$app->user->id && !Yii::$app->user->can('deleteOffer')) {
+            throw new ForbiddenHttpException('Нельзя удалить чужое объявление.');
+        }
     }
 }

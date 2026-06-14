@@ -6,7 +6,7 @@ use app\models\Offer;
 use app\models\Category;
 use yii\helpers\ArrayHelper;
 
-$this->title = 'Новая публикация';
+$this->title = 'Новое объявление';
 ?>
 
 <section class="ticket-form">
@@ -51,9 +51,9 @@ $this->title = 'Новая публикация';
                         ArrayHelper::map(Category::find()->all(), 'id', 'name'),
                         [
                             'multiple' => true,
-                            'prompt' => 'Выбрать категорию публикации',
+                            'prompt' => 'Выбрать категорию объявления',
                             'class' => 'form__select js-multiple-select',
-                            'data-label' => 'Выбрать категорию публикации',
+                            'data-label' => 'Выбрать категорию объявления',
                             'id' => 'category-field'
                         ]
                     ) ?>

@@ -3,8 +3,8 @@
 $this->title = 'Поиск';
 
 $foundCount = $pagination->totalCount;
-$foundWord = Yii::$app->i18n->format('{n, plural, =1{Найдена} one{Найдена} few{Найдено} many{Найдено} other{Найдено}}', ['n' => $foundCount], 'ru_RU');
-$publicationWord = Yii::$app->i18n->format('{n, plural, =1{публикация} one{публикация} few{публикации} many{публикаций} other{публикаций}}', ['n' => $foundCount], 'ru_RU');
+$foundWord = 'Найдено';
+$offerWord = Yii::$app->i18n->format('{n, plural, =1{объявление} one{объявление} few{объявления} many{объявлений} other{объявлений}}', ['n' => $foundCount], 'ru_RU');
 ?>
 
 <section class="search-results">
@@ -12,11 +12,11 @@ $publicationWord = Yii::$app->i18n->format('{n, plural, =1{публикация}
     <div class="search-results__wrapper">
         <?php if (!$foundCount) : ?>
             <div class="search-results__message">
-                <p>Не найдено ни одной публикации</p>
+                <p>Не найдено ни одного объявления</p>
             </div>
         <?php else : ?>
             <p class="search-results__label">
-                <?= $foundWord ?> <span class="js-results"><?= $foundCount ?> <?= $publicationWord ?></span>
+                <?= $foundWord ?> <span class="js-results"><?= $foundCount ?> <?= $offerWord ?></span>
             </p>
             <ul class="search-results__list">
                 <?php foreach ($offers as $offer) : ?>

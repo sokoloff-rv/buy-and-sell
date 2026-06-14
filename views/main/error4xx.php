@@ -1,6 +1,7 @@
 <?php
 
 use app\assets\AppAsset;
+use yii\helpers\Html;
 
 AppAsset::register($this);
 $this->beginPage();
@@ -18,8 +19,8 @@ $this->beginPage();
         <h1 class="error__title"><?= (int) $statusCode ?></h1>
         <h2 class="error__subtitle">Ошибка запроса</h2>
         <ul class="error__list">
-            <li class="error__item"><a href="/">Главная страница</a></li>
-            <li class="error__item"><a href="/login">Вход и регистрация</a></li>
+            <li class="error__item"><?= Html::a('Главная страница', ['/main/index']) ?></li>
+            <li class="error__item"><?= Html::a('Вход и регистрация', ['/login']) ?></li>
         </ul>
     </section>
 </main>

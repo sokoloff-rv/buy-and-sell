@@ -2,6 +2,14 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$mailer = [
+    'class' => \yii\symfonymailer\Mailer::class,
+    'viewPath' => '@app/mail',
+    'useFileTransport' => !YII_ENV_PROD && empty($params['mailerDsn']),
+];
+if (!empty($params['mailerDsn'])) {
+    $mailer['transport'] = ['dsn' => $params['mailerDsn']];
+}
 
 $config = [
     'id' => 'basic',
@@ -26,12 +34,7 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'main/error',
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-
-            'useFileTransport' => true,
-        ],
+        'mailer' => $mailer,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -45,17 +48,22 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'hostInfo' => $params['siteUrl'],
             'rules' => [
                 '' => 'main/index',
                 'register' => 'register/index',
                 'login' => 'login/index',
                 'login/vk' => 'login/vk',
                 'login/vk-auth' => 'login/vk-auth',
+                'login/vk-email' => 'login/vk-email',
                 'search' => 'search/index',
                 'offers/add' => 'offers/add',
                 'offers/edit/<id:\d+>' => 'offers/edit',
                 'offers/category/<id:\d+>' => 'offers/category',
                 'offers/<id:\d+>' => 'offers/index',
+                'chat/token' => 'chat/token',
+                'chat/open' => 'chat/open',
+                'chat/dialogs/<offerId:\d+>' => 'chat/dialogs',
                 'my/comments' => 'my/comments',
                 'my/delete-comment/<id:\d+>' => 'my/delete-comment',
                 'my' => 'my/index',
@@ -71,13 +79,21 @@ $config = [
                     'class' => 'app\components\VKID',
                     'clientId' => $params['vkClientId'],
                     'clientSecret' => $params['vkClientSecret'],
-                    'returnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
+                    'returnUrl' => $params['vkReturnUrl'],
                     'scope' => 'email',
                 ],
             ],
         ],
         'search' => [
             'class' => 'app\components\SearchComponent',
+        ],
+        'imageStorage' => [
+            'class' => 'app\components\ImageStorage',
+        ],
+        'firebase' => [
+            'class' => 'app\components\FirebaseComponent',
+            'credentialsPath' => $params['firebaseCredentialsPath'],
+            'databaseUri' => $params['firebaseDatabaseUri'],
         ],
     ],
     'params' => $params,

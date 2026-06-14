@@ -1,6 +1,8 @@
 <?php
 
 use app\assets\AppAsset;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 
@@ -31,28 +33,26 @@ $this->beginPage();
             <h2 class="error__subtitle">Ошибка cервера</h2>
             <ul class="error__list">
                 <li class="error__item">
-                    <a href="/login">Вход и регистрация</a>
+                    <?= Html::a('Вход и регистрация', ['/login']) ?>
                 </li>
                 <li class="error__item">
-                    <a href="/offers/add">Новая публикация</a>
+                    <?= Html::a('Новое объявление', ['/offers/add']) ?>
                 </li>
                 <li class="error__item">
-                    <a href="/">Главная страница</a>
+                    <?= Html::a('Главная страница', ['/main/index']) ?>
                 </li>
             </ul>
-            <form class="error__search search search--small" method="get" action="#" autocomplete="off">
+            <form class="error__search search search--small" method="get" action="<?= Url::to(['/search/index']) ?>" autocomplete="off">
                 <input type="search" name="query" placeholder="Поиск" aria-label="Поиск">
                 <div class="search__icon"></div>
                 <div class="search__close-btn"></div>
             </form>
-            <a class="error__logo logo" href="main.html">
+            <a class="error__logo logo" href="<?= Url::to(['/main/index']) ?>">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
         </section>
     </main>
 
-    <script src="js/vendor.js"></script>
-    <script src="js/main.js"></script>
     <?php $this->endBody() ?>
 </body>
 

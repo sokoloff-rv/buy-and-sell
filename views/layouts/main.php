@@ -34,14 +34,14 @@ $action = Yii::$app->controller->action->id;
 
     <header class="header <?= Yii::$app->user->isGuest ? '' : 'header--logged' ?> ">
         <div class="header__wrapper">
-            <a class="header__logo logo" href="/">
+            <a class="header__logo logo" href="<?= Url::to(['/main/index']) ?>">
                 <img src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам">
             </a>
             <?php if (!Yii::$app->user->isGuest) : ?>
             <nav class="header__user-menu">
                 <ul class="header__list">
                     <li class="header__item <?= ($controller == 'my' && $action == 'index') ? 'header__item--active' : '' ?>">
-                        <a href="<?= Url::to(['my/index']) ?>">Публикации</a>
+                        <a href="<?= Url::to(['my/index']) ?>">Мои объявления</a>
                     </li>
                     <li class="header__item <?= ($controller == 'my' && $action == 'comments') ? 'header__item--active' : '' ?>">
                         <a href="<?= Url::to(['my/comments']) ?>">Комментарии</a>
@@ -67,9 +67,18 @@ $action = Yii::$app->controller->action->id;
             <?php if (Yii::$app->user->isGuest) : ?>
                 <a class="header__input" href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
             <?php else : ?>
-                <a class="header__avatar avatar" href="#">
-                    <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
-                </a>
+                <div class="header__user">
+                    <div class="header__avatar avatar">
+                        <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
+                    </div>
+                    <ul class="user-popup">
+                        <li>
+                            <?= Html::beginForm(['/login/logout'], 'post') ?>
+                            <?= Html::submitButton('Выход', ['class' => 'user-popup__item']) ?>
+                            <?= Html::endForm() ?>
+                        </li>
+                    </ul>
+                </div>
             <?php endif; ?>
         </div>
     </header>
@@ -85,7 +94,7 @@ $action = Yii::$app->controller->action->id;
     <footer class="page-footer">
         <div class="page-footer__wrapper">
             <div class="page-footer__col">
-                <a href="/" class="page-footer__logo-academy" aria-label="Ссылка на сайт HTML-Академии">
+                <a href="<?= Url::to(['/main/index']) ?>" class="page-footer__logo-academy" aria-label="Ссылка на главную страницу">
                     <svg width="132" height="46">
                         <use xlink:href="img/sprite_auto.svg#logo-htmlac"></use>
                     </svg>
@@ -93,14 +102,18 @@ $action = Yii::$app->controller->action->id;
                 <p class="page-footer__copyright">© 2019 Проект Академии</p>
             </div>
             <div class="page-footer__col">
-                <a href="/" class="page-footer__logo logo">
+                <a href="<?= Url::to(['/main/index']) ?>" class="page-footer__logo logo">
                     <img src="/img/logo.svg" width="179" height="35" alt="Логотип Куплю Продам">
                 </a>
             </div>
             <div class="page-footer__col">
                 <ul class="page-footer__nav">
                     <li>
-                        <a href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
+                        <?php if (Yii::$app->user->isGuest) : ?>
+                            <a href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
+                        <?php else : ?>
+                            <a href="<?= Url::to(['/my']) ?>">Мои объявления</a>
+                        <?php endif; ?>
                     </li>
                     <li>
                         <a href="<?= Url::to(['/offers/add']) ?>">Создать объявление</a>

@@ -50,15 +50,15 @@ $this->title = 'Редактирование объявления';
                 </div>
 
                 <div class="ticket-form__row">
-                    <?= $form->field($editOfferForm, 'category_id[]', [
+                    <?= $form->field($editOfferForm, 'category_id', [
                         'template' => "{input}\n{hint}\n{error}"
                     ])->dropDownList(
                         ArrayHelper::map(Category::find()->all(), 'id', 'name'),
                         [
                             'multiple' => true,
-                            'prompt' => 'Выбрать категорию публикации',
+                            'prompt' => 'Выбрать категорию объявления',
                             'class' => 'form__select js-multiple-select',
-                            'data-label' => 'Выбрать категорию публикации',
+                            'data-label' => 'Выбрать категорию объявления',
                             'id' => 'category-field'
                         ]
                     ) ?>

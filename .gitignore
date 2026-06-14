@@ -43,3 +43,15 @@ web/uploads
 
 #local secrets
 /config/params-local.php
+/config/test_db-local.php
+
+/.env
+/.env.*
+!/\.env.example
+*firebase*.json
+!/firebase.json
+*service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx

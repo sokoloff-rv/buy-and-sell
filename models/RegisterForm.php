@@ -23,7 +23,7 @@ class RegisterForm extends Model
             ['password', 'string', 'min' => 6],
             ['password_repeat', 'string', 'min' => 6],
             ['password_repeat', 'compare', 'compareAttribute' => 'password'],
-            ['avatar', 'file', 'extensions' => 'png, jpg'],
+            ['avatar', 'file', 'extensions' => 'png, jpg', 'mimeTypes' => 'image/png, image/jpeg', 'checkExtensionByMimeType' => true],
         ];
     }
 

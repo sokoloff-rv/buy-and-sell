@@ -12,8 +12,9 @@ class SearchController extends Controller
     {
         $searchModel = Yii::$app->search->getSearchModel();
         $query = Offer::find()
+            ->with(['images', 'categories'])
             ->where(['like', 'title', (string) $searchModel->query])
-            ->orderBy(['created_at' => SORT_DESC]);
+            ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC]);
 
         $pagination = new \yii\data\Pagination([
             'defaultPageSize' => 8,

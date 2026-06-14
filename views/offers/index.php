@@ -1,8 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use app\models\Image;
 
 $this->title = $offer->title;
 ?>
@@ -12,8 +14,15 @@ $this->title = $offer->title;
         <h1 class="visually-hidden">Карточка объявления</h1>
         <div class="ticket__content">
             <?php foreach ($offer->images as $image) : ?>
+                <?php
+                    $imageRetina = Image::retinaUrl($image->image_path);
+                    $imageOptions = ['alt' => 'Изображение товара'];
+                    if ($imageRetina !== '') {
+                        $imageOptions['srcset'] = $imageRetina . ' 2x';
+                    }
+                ?>
                 <div class="ticket__img">
-                    <img src="<?= Html::encode($image->image_path) ?>" alt="Изображение товара">
+                    <?= Html::img($image->image_path, $imageOptions) ?>
                 </div>
             <?php endforeach; ?>
             <div class="ticket__info">
@@ -42,9 +51,9 @@ $this->title = $offer->title;
                 <ul class="ticket__tags">
                     <?php foreach ($offer->categories as $category) : ?>
                         <li>
-                            <a href="<?= Url::to(['offers/category/', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
+                            <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
-                                    <img src="<?= Html::encode($category->randomImageUrl) ?>" alt="Иконка категории">
+                                    <img src="<?= Html::encode($category->imageUrl) ?>" srcset="<?= Html::encode($category->retinaImageUrl) ?> 2x" alt="Иконка категории">
                                 </span>
                                 <span class="category-tile__label"><?= Html::encode($category->name) ?></span>
                             </a>
@@ -52,8 +61,10 @@ $this->title = $offer->title;
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
-                <?= Html::a('Удалить объявление', ['/offers/delete', 'id' => $offer->id], ['class' => 'btn btn--small']) ?>
+            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('deleteOffer')) : ?>
+                <?= Html::beginForm(['/offers/delete', 'id' => $offer->id], 'post') ?>
+                <?= Html::submitButton('Удалить объявление', ['class' => 'btn btn--small']) ?>
+                <?= Html::endForm() ?>
             <?php endif; ?>
         </div>
         <div class="ticket__comments">
@@ -100,8 +111,10 @@ $this->title = $offer->title;
                                 <div class="comment-card__content">
                                     <p><?= Html::encode($comment->text) ?></p>
                                 </div>
-                                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('moderator')) : ?>
-                                    <?= Html::a('Удалить', ['/my/delete-comment', 'id' => $comment->id], ['class' => 'comment-card__delete js-delete']) ?>
+                                <?php if (!Yii::$app->user->isGuest && Yii::$app->user->can('deleteComment')) : ?>
+                                    <?= Html::beginForm(['/my/delete-comment', 'id' => $comment->id], 'post') ?>
+                                    <?= Html::submitButton('Удалить', ['class' => 'comment-card__delete js-delete']) ?>
+                                    <?= Html::endForm() ?>
                                 <?php endif; ?>
                             </div>
                         </li>
@@ -111,3 +124,37 @@ $this->title = $offer->title;
         </div>
     </div>
 </section>
+
+<?php if (!Yii::$app->user->isGuest && !empty(Yii::$app->params['firebaseWebConfig'])) : ?>
+    <?php
+    $isSeller = (int) Yii::$app->user->id === (int) $offer->user_id;
+    $chatConfig = [
+        'firebase' => Yii::$app->params['firebaseWebConfig'],
+        'offerId' => (string) $offer->id,
+        'currentUserId' => (string) Yii::$app->user->id,
+        'isSeller' => $isSeller,
+        'tokenUrl' => Url::to(['/chat/token']),
+        'openUrl' => Url::to(['/chat/open']),
+        'dialogsUrl' => Url::to(['/chat/dialogs', 'offerId' => $offer->id]),
+        'csrfParam' => Yii::$app->request->csrfParam,
+        'csrfToken' => Yii::$app->request->csrfToken,
+    ];
+    ?>
+    <script id="chat-config" type="application/json"><?= Json::htmlEncode($chatConfig) ?></script>
+    <button class="chat-button" type="button" aria-label="Открыть чат"></button>
+    <section class="chat visually-hidden" aria-label="Чат по объявлению">
+        <h2 class="chat__subtitle">Чат по объявлению</h2>
+        <?php if ($isSeller) : ?>
+            <label class="chat__dialog-label" for="chat-dialog">Покупатель</label>
+            <select class="chat__dialog-select" id="chat-dialog">
+                <option value="">Нет диалогов</option>
+            </select>
+        <?php endif; ?>
+        <p class="chat__status" aria-live="polite">Подключение...</p>
+        <ul class="chat__conversation"></ul>
+        <form class="chat__form">
+            <textarea class="chat__form-message" name="chat-message" maxlength="2000" placeholder="Введите сообщение" required></textarea>
+            <button class="chat__form-button" type="submit" aria-label="Отправить сообщение"></button>
+        </form>
+    </section>
+<?php endif; ?>

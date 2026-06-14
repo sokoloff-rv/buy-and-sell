@@ -4,13 +4,16 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
-use yii\web\BadRequestHttpException;
 use app\models\User;
 use app\models\LoginForm;
+use app\models\VkEmailForm;
 
 class LoginController extends Controller
 {
+    private const VK_REGISTRATION_SESSION = 'vkRegistration';
+
     public function behaviors(): array
     {
         return [
@@ -18,13 +21,31 @@ class LoginController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['?'],
                     ],
                 ],
                 'denyCallback' => fn () => $this->goHome(),
             ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'logout' => ['POST'],
+                ],
+            ],
         ];
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 
     public function actionIndex()
@@ -73,25 +94,43 @@ class LoginController extends Controller
 
         $vkId = $userAttributes['user_id'];
         $email = $userAttributes['email'] ?? $accessToken->getParam('email');
-        if (!$email) {
-            throw new BadRequestHttpException('VK не передал email пользователя.');
-        }
-        $userAttributes['email'] = $email;
 
         $foundUser = User::findOne(['vk_id' => $vkId]);
         if (!$foundUser && $email) {
             $foundUser = User::findOne(['email' => $email]);
         }
 
+        if (!$foundUser && !$email) {
+            Yii::$app->session->set(self::VK_REGISTRATION_SESSION, [
+                'user_id' => $vkId,
+                'first_name' => $userAttributes['first_name'] ?? '',
+                'last_name' => $userAttributes['last_name'] ?? '',
+                'avatar' => $userAttributes['avatar'] ?? null,
+            ]);
+            return $this->redirect(['/login/vk-email']);
+        }
+
+        $userAttributes['email'] = $email;
+
         if ($foundUser) {
-            $foundUser->vk_id = $vkId;
-            $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
-            $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
-            if (!$foundUser->save()) {
-                throw new \Exception('Не удалось сохранить пользователя.');
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $foundUser->vk_id = $vkId;
+                $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
+                $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
+                if (!$foundUser->save()) {
+                    throw new \Exception('Не удалось сохранить пользователя: ' . implode('; ', $foundUser->getFirstErrors()));
+                }
+
+                User::assignUserRole($foundUser->id);
+                $transaction->commit();
+            } catch (\Throwable $exception) {
+                if ($transaction->isActive) {
+                    $transaction->rollBack();
+                }
+                throw $exception;
             }
 
-            User::assignUserRole($foundUser->id);
             Yii::$app->user->login($foundUser);
         } else {
             $newUser = new User();
@@ -99,5 +138,27 @@ class LoginController extends Controller
         }
 
         return $this->goHome();
+    }
+
+    public function actionVkEmail()
+    {
+        $userAttributes = Yii::$app->session->get(self::VK_REGISTRATION_SESSION);
+        if (!$userAttributes) {
+            return $this->redirect(['/login']);
+        }
+
+        $form = new VkEmailForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $userAttributes['email'] = $form->email;
+            $user = new User();
+            $user->createUserFromVK($userAttributes);
+            Yii::$app->session->remove(self::VK_REGISTRATION_SESSION);
+
+            return $this->goHome();
+        }
+
+        return $this->render('vk-email', [
+            'form' => $form,
+        ]);
     }
 }

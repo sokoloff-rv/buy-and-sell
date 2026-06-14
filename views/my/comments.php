@@ -40,7 +40,9 @@ $this->title = 'Комментарии';
                                         <?= Html::encode($comment->text) ?>
                                     </p>
                                 </div>
-                                <button class="comment-card__delete js-delete" type="button" onclick="location.href='<?= Yii::$app->urlManager->createUrl(['my/delete-comment', 'id' => $comment->id]) ?>'">Удалить</button>
+                                <?= Html::beginForm(['/my/delete-comment', 'id' => $comment->id], 'post') ?>
+                                <?= Html::submitButton('Удалить', ['class' => 'comment-card__delete js-delete']) ?>
+                                <?= Html::endForm() ?>
                             </div>
                         </li>
                     <?php endforeach; ?>
