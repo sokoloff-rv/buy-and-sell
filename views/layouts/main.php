@@ -67,9 +67,18 @@ $action = Yii::$app->controller->action->id;
             <?php if (Yii::$app->user->isGuest) : ?>
                 <a class="header__input" href="<?= Url::to(['/login']) ?>">Вход и регистрация</a>
             <?php else : ?>
-                <a class="header__avatar avatar" href="#">
-                    <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
-                </a>
+                <div class="header__user">
+                    <div class="header__avatar avatar">
+                        <img src="<?= Html::encode(Yii::$app->user->identity->avatarUrl) ?>" alt="Аватар пользователя">
+                    </div>
+                    <ul class="user-popup">
+                        <li>
+                            <?= Html::beginForm(['/login/logout'], 'post') ?>
+                            <?= Html::submitButton('Выход', ['class' => 'user-popup__item']) ?>
+                            <?= Html::endForm() ?>
+                        </li>
+                    </ul>
+                </div>
             <?php endif; ?>
         </div>
     </header>

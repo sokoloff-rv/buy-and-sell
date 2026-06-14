@@ -90,4 +90,15 @@ class ProjectCest
         $I->click('Удалить');
         $I->dontSeeRecord(Offer::class, ['id' => 1]);
     }
+
+    public function userCanLogOutThroughAvatarMenu(FunctionalTester $I): void
+    {
+        $I->amLoggedInAs(User::findOne(1));
+        $I->amOnRoute('main/index');
+        $I->submitForm('.user-popup form', []);
+
+        $I->amOnRoute('offers/add');
+        $I->seeResponseCodeIsSuccessful();
+        $I->see('Вход');
+    }
 }
