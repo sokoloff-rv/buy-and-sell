@@ -3078,7 +3078,7 @@ textarea:invalid {
 
 .chat {
     width: 300px;
-    height: 360px;
+    min-height: 360px;
     padding: 10px 7px 19px;
     background-color: #2b51a6;
     border: 1px solid #24448d;
@@ -3088,6 +3088,30 @@ textarea:invalid {
     bottom: 50px;
     left: calc(50% + 190px);
     z-index: 3
+}
+
+.chat__dialog-label {
+    display: block;
+    margin: 0 18px 4px;
+    color: #fff;
+    font-size: 11px
+}
+
+.chat__dialog-select {
+    display: block;
+    width: calc(100% - 36px);
+    margin: 0 18px 8px;
+    padding: 4px;
+    border: 0;
+    border-radius: 4px
+}
+
+.chat__status {
+    min-height: 14px;
+    margin: 0 18px 6px;
+    color: rgba(255, 255, 255, .8);
+    font-size: 11px;
+    line-height: 14px
 }
 
 .chat--open {

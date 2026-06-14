@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\models\Image;
@@ -123,3 +124,37 @@ $this->title = $offer->title;
         </div>
     </div>
 </section>
+
+<?php if (!Yii::$app->user->isGuest && !empty(Yii::$app->params['firebaseWebConfig'])) : ?>
+    <?php
+    $isSeller = (int) Yii::$app->user->id === (int) $offer->user_id;
+    $chatConfig = [
+        'firebase' => Yii::$app->params['firebaseWebConfig'],
+        'offerId' => (string) $offer->id,
+        'currentUserId' => (string) Yii::$app->user->id,
+        'isSeller' => $isSeller,
+        'tokenUrl' => Url::to(['/chat/token']),
+        'openUrl' => Url::to(['/chat/open']),
+        'dialogsUrl' => Url::to(['/chat/dialogs', 'offerId' => $offer->id]),
+        'csrfParam' => Yii::$app->request->csrfParam,
+        'csrfToken' => Yii::$app->request->csrfToken,
+    ];
+    ?>
+    <script id="chat-config" type="application/json"><?= Json::htmlEncode($chatConfig) ?></script>
+    <button class="chat-button" type="button" aria-label="Открыть чат"></button>
+    <section class="chat visually-hidden" aria-label="Чат по объявлению">
+        <h2 class="chat__subtitle">Чат по объявлению</h2>
+        <?php if ($isSeller) : ?>
+            <label class="chat__dialog-label" for="chat-dialog">Покупатель</label>
+            <select class="chat__dialog-select" id="chat-dialog">
+                <option value="">Нет диалогов</option>
+            </select>
+        <?php endif; ?>
+        <p class="chat__status" aria-live="polite">Подключение...</p>
+        <ul class="chat__conversation"></ul>
+        <form class="chat__form">
+            <textarea class="chat__form-message" name="chat-message" maxlength="2000" placeholder="Введите сообщение" required></textarea>
+            <button class="chat__form-button" type="submit" aria-label="Отправить сообщение"></button>
+        </form>
+    </section>
+<?php endif; ?>

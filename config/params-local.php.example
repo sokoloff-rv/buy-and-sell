@@ -4,4 +4,9 @@ return [
     'cookieValidationKey' => '',
     'vkClientId' => '',
     'vkClientSecret' => '',
+    'mailerDsn' => '',
+    'firebaseCredentialsPath' => '',
+    'firebaseDatabaseUri' => '',
+    'firebaseWebConfig' => [],
+    'siteUrl' => 'https://example.com',
 ];

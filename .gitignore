@@ -49,6 +49,7 @@ web/uploads
 /.env.*
 !/\.env.example
 *firebase*.json
+!/firebase.json
 *service-account*.json
 *.pem
 *.key

@@ -48,6 +48,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'hostInfo' => $params['siteUrl'],
             'rules' => [
                 '' => 'main/index',
                 'register' => 'register/index',
@@ -60,6 +61,9 @@ $config = [
                 'offers/edit/<id:\d+>' => 'offers/edit',
                 'offers/category/<id:\d+>' => 'offers/category',
                 'offers/<id:\d+>' => 'offers/index',
+                'chat/token' => 'chat/token',
+                'chat/open' => 'chat/open',
+                'chat/dialogs/<offerId:\d+>' => 'chat/dialogs',
                 'my/comments' => 'my/comments',
                 'my/delete-comment/<id:\d+>' => 'my/delete-comment',
                 'my' => 'my/index',
@@ -85,6 +89,11 @@ $config = [
         ],
         'imageStorage' => [
             'class' => 'app\components\ImageStorage',
+        ],
+        'firebase' => [
+            'class' => 'app\components\FirebaseComponent',
+            'credentialsPath' => $params['firebaseCredentialsPath'],
+            'databaseUri' => $params['firebaseDatabaseUri'],
         ],
     ],
     'params' => $params,

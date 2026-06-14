@@ -57,6 +57,32 @@ return [
 
 В production файловый transport писем отключен. Ошибки и предупреждения записываются в `runtime/logs/app.log`, пользователю детали исключений не показываются.
 
+## Онлайн-чат
+
+Для чата задайте в `config/params-local.php` путь к Firebase service account JSON,
+Realtime Database URI, Firebase Web Config и SMTP DSN. Service account JSON должен
+храниться вне web-директории и не добавляться в Git.
+
+Правила доступа находятся в `firebase/database.rules.json`. После изменения их
+нужно развернуть в Firebase Realtime Database:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json npx firebase-tools deploy --only database --project PROJECT_ID
+php tests/firebase_rules_check.php
+```
+
+Уведомления о непрочитанных сообщениях отправляет команда:
+
+```bash
+php yii chat/notify
+```
+
+Пример запуска каждые пять минут через cron:
+
+```cron
+*/5 * * * * cd /var/www/user/data/www/buyandsell.sokoloff-rv.ru && /usr/bin/flock -n /tmp/buyandsell-chat-notify.lock /usr/bin/php yii chat/notify >> runtime/logs/chat-notify.log 2>&1
+```
+
 ## Роли
 
 ```bash

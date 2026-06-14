@@ -1,0 +1,25 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "chats": {
+      "$offerId": {
+        "$buyerId": {
+          ".read": "auth != null && (auth.uid === data.child('meta/sellerId').val() || auth.uid === data.child('meta/buyerId').val())",
+          "meta": {
+            ".write": false
+          },
+          "messages": {
+            "$messageId": {
+              ".write": "auth != null && ((!data.exists() && newData.child('senderId').val() === auth.uid && (auth.uid === root.child('chats/' + $offerId + '/' + $buyerId + '/meta/sellerId').val() || auth.uid === root.child('chats/' + $offerId + '/' + $buyerId + '/meta/buyerId').val()) && newData.child('recipientId').val() !== auth.uid && (newData.child('recipientId').val() === root.child('chats/' + $offerId + '/' + $buyerId + '/meta/sellerId').val() || newData.child('recipientId').val() === root.child('chats/' + $offerId + '/' + $buyerId + '/meta/buyerId').val()) && newData.child('read').val() === false && newData.child('notified').val() === false) || (data.exists() && auth.uid === data.child('recipientId').val() && data.child('read').val() === false && newData.child('read').val() === true && newData.child('senderId').val() === data.child('senderId').val() && newData.child('recipientId').val() === data.child('recipientId').val() && newData.child('text').val() === data.child('text').val() && newData.child('createdAt').val() === data.child('createdAt').val() && newData.child('notified').val() === data.child('notified').val()))",
+              ".validate": "newData.hasChildren(['senderId', 'recipientId', 'text', 'createdAt', 'read', 'notified']) && newData.child('senderId').isString() && newData.child('recipientId').isString() && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 2000 && newData.child('createdAt').isNumber() && newData.child('read').isBoolean() && newData.child('notified').isBoolean()",
+              "$field": {
+                ".validate": "$field === 'senderId' || $field === 'recipientId' || $field === 'text' || $field === 'createdAt' || $field === 'read' || $field === 'notified'"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

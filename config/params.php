@@ -10,6 +10,10 @@ $params = [
     'vkClientSecret' => '',
     'vkReturnUrl' => 'https://buyandsell.sokoloff-rv.ru/login/vk-auth',
     'mailerDsn' => '',
+    'firebaseCredentialsPath' => '',
+    'firebaseDatabaseUri' => '',
+    'firebaseWebConfig' => [],
+    'siteUrl' => 'https://buyandsell.sokoloff-rv.ru',
 ];
 
 $localParams = __DIR__ . '/params-local.php';

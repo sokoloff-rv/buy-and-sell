@@ -143,4 +143,23 @@ class ProjectCest
         $I->see('Этот email уже используется.');
         $I->dontSeeRecord(User::class, ['vk_id' => 888888]);
     }
+
+    public function guestDoesNotSeeChatOrReceiveFirebaseToken(FunctionalTester $I): void
+    {
+        $I->amOnRoute('offers/index', ['id' => 1]);
+        $I->dontSeeElement('.chat-button');
+
+        $I->amOnRoute('chat/token');
+        $I->seeResponseCodeIsSuccessful();
+        $I->see('Вход');
+    }
+
+    public function ownerCannotOpenChatWithSelf(FunctionalTester $I): void
+    {
+        $I->amLoggedInAs(User::findOne(1));
+        $I->amOnRoute('offers/index', ['id' => 1]);
+        $csrf = $I->grabValueFrom('input[name="_csrf"]');
+        $I->sendAjaxPostRequest('/chat/open', ['offerId' => 1, '_csrf' => $csrf]);
+        $I->seeResponseCodeIs(403);
+    }
 }
