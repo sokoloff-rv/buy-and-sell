@@ -44,6 +44,10 @@
         }
     },
     "scripts": {
+        "test": [
+            "php vendor/bin/codecept run",
+            "php tests/firebase_rules_check.php"
+        ],
         "post-install-cmd": [
             "yii\\composer\\Installer::postInstall"
         ],

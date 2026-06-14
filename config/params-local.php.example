@@ -1,12 +1,19 @@
 <?php
 
 return [
-    'cookieValidationKey' => '',
+    'cookieValidationKey' => 'r',
     'vkClientId' => '',
     'vkClientSecret' => '',
+    'vkReturnUrl' => '',
     'mailerDsn' => '',
     'firebaseCredentialsPath' => '',
     'firebaseDatabaseUri' => '',
-    'firebaseWebConfig' => [],
-    'siteUrl' => 'https://example.com',
+    'firebaseWebConfig' => [
+        'apiKey' => '',
+        'authDomain' => '',
+        'databaseURL' => '',
+        'projectId' => '',
+        'appId' => '',
+    ],
+    'siteUrl' => '',
 ];
