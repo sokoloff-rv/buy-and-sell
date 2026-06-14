@@ -92,7 +92,7 @@ class LoginController extends Controller
                 $foundUser->name = trim(($userAttributes['first_name'] ?? '') . ' ' . ($userAttributes['last_name'] ?? '')) ?: $foundUser->name;
                 $foundUser->avatar = $userAttributes['avatar'] ?? $foundUser->avatar;
                 if (!$foundUser->save()) {
-                    throw new \Exception('Не удалось сохранить пользователя.');
+                    throw new \Exception('Не удалось сохранить пользователя: ' . implode('; ', $foundUser->getFirstErrors()));
                 }
 
                 User::assignUserRole($foundUser->id);

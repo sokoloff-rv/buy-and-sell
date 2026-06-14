@@ -19,7 +19,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['name', 'email'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'email', 'password', 'avatar'], 'string', 'max' => 255],
+            [['name', 'email', 'password'], 'string', 'max' => 255],
+            [['avatar'], 'string', 'max' => 1024],
             [['vk_id'], 'integer'],
             [['email'], 'unique'],
             [['vk_id'], 'unique'],
@@ -87,7 +88,7 @@ class User extends ActiveRecord implements IdentityInterface
         $transaction = Yii::$app->db->beginTransaction();
         try {
             if (!$user->save()) {
-                throw new \RuntimeException('Не удалось зарегистрировать пользователя VK.');
+                throw new \RuntimeException('Не удалось зарегистрировать пользователя VK: ' . implode('; ', $user->getFirstErrors()));
             }
 
             self::assignUserRole($user->id);
