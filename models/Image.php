@@ -43,4 +43,15 @@ class Image extends \yii\db\ActiveRecord
         $newImage->offer_id = $offerId;
         return $newImage->save();
     }
+
+    public static function retinaUrl(string $path): string
+    {
+        $dot = strrpos($path, '.');
+        if ($dot === false) {
+            return '';
+        }
+        $retina = substr($path, 0, $dot) . '@2x' . substr($path, $dot);
+
+        return is_file(Yii::getAlias('@webroot' . $retina)) ? $retina : '';
+    }
 }

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use app\models\Image;
 
 $this->title = $offer->title;
 ?>
@@ -12,8 +13,15 @@ $this->title = $offer->title;
         <h1 class="visually-hidden">Карточка объявления</h1>
         <div class="ticket__content">
             <?php foreach ($offer->images as $image) : ?>
+                <?php
+                    $imageRetina = Image::retinaUrl($image->image_path);
+                    $imageOptions = ['alt' => 'Изображение товара'];
+                    if ($imageRetina !== '') {
+                        $imageOptions['srcset'] = $imageRetina . ' 2x';
+                    }
+                ?>
                 <div class="ticket__img">
-                    <img src="<?= Html::encode($image->image_path) ?>" alt="Изображение товара">
+                    <?= Html::img($image->image_path, $imageOptions) ?>
                 </div>
             <?php endforeach; ?>
             <div class="ticket__info">

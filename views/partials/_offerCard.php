@@ -1,11 +1,20 @@
 <?php
 
 use yii\helpers\Html;
+use app\models\Image;
+
+$offerUrl = !empty($showDeleteButton) ? ['/offers/edit', 'id' => $offer->id] : ['/offers/index', 'id' => $offer->id];
+
+$previewRetina = Image::retinaUrl($offer->previewImage);
+$previewOptions = ['alt' => 'Изображение товара'];
+if ($previewRetina !== '') {
+    $previewOptions['srcset'] = $previewRetina . ' 2x';
+}
 ?>
 
 <div class="ticket-card">
     <div class="ticket-card__img">
-        <?= Html::img($offer->previewImage, ['alt' => 'Изображение товара']) ?>
+        <?= Html::a(Html::img($offer->previewImage, $previewOptions), $offerUrl) ?>
     </div>
     <div class="ticket-card__info">
         <span class="ticket-card__label"><?= Html::encode($offer->label) ?></span>
@@ -16,7 +25,7 @@ use yii\helpers\Html;
         </div>
         <div class="ticket-card__header">
             <h3 class="ticket-card__title">
-                <?= Html::a(Html::encode($offer->title), !empty($showDeleteButton) ? ['/offers/edit', 'id' => $offer->id] : ['/offers/index', 'id' => $offer->id]) ?>
+                <?= Html::a(Html::encode($offer->title), $offerUrl) ?>
             </h3>
             <p class="ticket-card__price">
                 <span class="js-sum"><?= Html::encode(round($offer->price, 0)) ?></span> ₽
