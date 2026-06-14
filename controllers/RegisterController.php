@@ -49,7 +49,8 @@ class RegisterController extends Controller
                     }
                     User::assignUserRole($user->id);
                     $transaction->commit();
-                    return $this->redirect(['/login']);
+                    Yii::$app->user->login($user);
+                    return $this->goHome();
                 } catch (\Throwable $exception) {
                     if ($transaction->isActive) {
                         $transaction->rollBack();
