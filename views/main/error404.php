@@ -36,7 +36,7 @@ $this->beginPage();
                     <?= Html::a('Вход и регистрация', ['/login']) ?>
                 </li>
                 <li class="error__item">
-                    <?= Html::a('Новая публикация', ['/offers/add']) ?>
+                    <?= Html::a('Новое объявление', ['/offers/add']) ?>
                 </li>
                 <li class="error__item">
                     <?= Html::a('Главная страница', ['/main/index']) ?>

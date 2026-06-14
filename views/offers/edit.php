@@ -56,9 +56,9 @@ $this->title = 'Редактирование объявления';
                         ArrayHelper::map(Category::find()->all(), 'id', 'name'),
                         [
                             'multiple' => true,
-                            'prompt' => 'Выбрать категорию публикации',
+                            'prompt' => 'Выбрать категорию объявления',
                             'class' => 'form__select js-multiple-select',
-                            'data-label' => 'Выбрать категорию публикации',
+                            'data-label' => 'Выбрать категорию объявления',
                             'id' => 'category-field'
                         ]
                     ) ?>
