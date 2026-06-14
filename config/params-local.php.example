@@ -4,6 +4,4 @@ return [
     'cookieValidationKey' => '',
     'vkClientId' => '',
     'vkClientSecret' => '',
-    'vkReturnUrl' => 'https://example.com/login/vk-auth',
-    'mailerDsn' => 'smtp://user:password@smtp.example.com:587',
 ];
