@@ -6,12 +6,14 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
-use yii\web\BadRequestHttpException;
 use app\models\User;
 use app\models\LoginForm;
+use app\models\VkEmailForm;
 
 class LoginController extends Controller
 {
+    private const VK_REGISTRATION_SESSION = 'vkRegistration';
+
     public function behaviors(): array
     {
         return [
@@ -99,7 +101,13 @@ class LoginController extends Controller
         }
 
         if (!$foundUser && !$email) {
-            throw new BadRequestHttpException('VK не передал email, а пользователь не найден.');
+            Yii::$app->session->set(self::VK_REGISTRATION_SESSION, [
+                'user_id' => $vkId,
+                'first_name' => $userAttributes['first_name'] ?? '',
+                'last_name' => $userAttributes['last_name'] ?? '',
+                'avatar' => $userAttributes['avatar'] ?? null,
+            ]);
+            return $this->redirect(['/login/vk-email']);
         }
 
         $userAttributes['email'] = $email;
@@ -130,5 +138,27 @@ class LoginController extends Controller
         }
 
         return $this->goHome();
+    }
+
+    public function actionVkEmail()
+    {
+        $userAttributes = Yii::$app->session->get(self::VK_REGISTRATION_SESSION);
+        if (!$userAttributes) {
+            return $this->redirect(['/login']);
+        }
+
+        $form = new VkEmailForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $userAttributes['email'] = $form->email;
+            $user = new User();
+            $user->createUserFromVK($userAttributes);
+            Yii::$app->session->remove(self::VK_REGISTRATION_SESSION);
+
+            return $this->goHome();
+        }
+
+        return $this->render('vk-email', [
+            'form' => $form,
+        ]);
     }
 }

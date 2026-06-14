@@ -101,4 +101,46 @@ class ProjectCest
         $I->seeResponseCodeIsSuccessful();
         $I->see('Вход');
     }
+
+    public function vkRegistrationCanBeCompletedWithEmail(FunctionalTester $I): void
+    {
+        Yii::$app->session->set('vkRegistration', [
+            'user_id' => 777777,
+            'first_name' => 'Новый',
+            'last_name' => 'Пользователь',
+            'avatar' => 'https://example.com/avatar.jpg',
+        ]);
+
+        $I->amOnRoute('login/vk-email');
+        $I->see('Укажите эл. почту');
+        $I->submitForm('.login__form', [
+            'VkEmailForm[email]' => 'new-vk-user@example.com',
+        ], 'Завершить регистрацию');
+
+        $I->seeRecord(User::class, [
+            'email' => 'new-vk-user@example.com',
+            'vk_id' => 777777,
+            'password' => null,
+        ]);
+        $user = User::findOne(['vk_id' => 777777]);
+        $I->assertNotNull(Yii::$app->authManager->getAssignment('user', (string) $user->id));
+        $I->assertNull(Yii::$app->session->get('vkRegistration'));
+    }
+
+    public function vkRegistrationDoesNotLinkEnteredExistingEmail(FunctionalTester $I): void
+    {
+        Yii::$app->session->set('vkRegistration', [
+            'user_id' => 888888,
+            'first_name' => 'Другой',
+            'last_name' => 'Пользователь',
+        ]);
+
+        $I->amOnRoute('login/vk-email');
+        $I->submitForm('.login__form', [
+            'VkEmailForm[email]' => 'user@example.com',
+        ], 'Завершить регистрацию');
+
+        $I->see('Этот email уже используется.');
+        $I->dontSeeRecord(User::class, ['vk_id' => 888888]);
+    }
 }

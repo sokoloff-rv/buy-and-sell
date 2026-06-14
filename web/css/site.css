@@ -1957,6 +1957,10 @@ input:checked+.switch__button {
     color: #fff
 }
 
+.login__hint {
+    color: #fff
+}
+
 .form-group .login__field {
     margin-bottom: 26px;
     margin-left: 4px
@@ -1971,6 +1975,13 @@ input:checked+.switch__button {
     min-height: 59px;
     padding: 19px 10px 21px;
     margin-bottom: 32px
+}
+
+.login__button--wide {
+    width: auto;
+    padding-right: 33px;
+    padding-left: 33px;
+    white-space: nowrap
 }
 
 .form {

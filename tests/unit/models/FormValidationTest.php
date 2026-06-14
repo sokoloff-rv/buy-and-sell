@@ -5,6 +5,7 @@ namespace tests\unit\models;
 use app\models\EditOfferForm;
 use app\models\NewOfferForm;
 use app\models\RegisterForm;
+use app\models\VkEmailForm;
 use Codeception\Test\Unit;
 
 class FormValidationTest extends Unit
@@ -50,5 +51,20 @@ class FormValidationTest extends Unit
         $this->assertArrayHasKey('email', $form->errors);
         $this->assertArrayHasKey('password', $form->errors);
         $this->assertArrayHasKey('password_repeat', $form->errors);
+    }
+
+    public function testVkEmailMustBeUnique(): void
+    {
+        $form = new VkEmailForm(['email' => 'user@example.com']);
+
+        $this->assertFalse($form->validate());
+        $this->assertArrayHasKey('email', $form->errors);
+    }
+
+    public function testVkEmailAcceptsNewAddress(): void
+    {
+        $form = new VkEmailForm(['email' => 'new-vk-user@example.com']);
+
+        $this->assertTrue($form->validate());
     }
 }

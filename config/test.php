@@ -27,6 +27,7 @@ return [
                 '' => 'main/index',
                 'register' => 'register/index',
                 'login' => 'login/index',
+                'login/vk-email' => 'login/vk-email',
                 'search' => 'search/index',
                 'offers/add' => 'offers/add',
                 'offers/edit/<id:\d+>' => 'offers/edit',
