@@ -54,9 +54,21 @@ class LoginController extends Controller
             throw new \Exception('Не удалось получить атрибуты пользователя от VK.');
         }
 
-        $foundUser = User::findOne(['email' => $userAttributes['email']]);
+        $vkId = $userAttributes['user_id'];
+        // VK ID отдаёт email не в user_info, а в ответе на обмен кода на токен.
+        $email = $userAttributes['email'] ?? $accessToken->getParam('email');
+        $userAttributes['email'] = $email;
+
+        // Сначала ищем по vk_id — он всегда присутствует в ответе VK ID.
+        // Если пользователя по vk_id нет, но есть email, связываем существующий
+        // аккаунт, ранее зарегистрированный по этой почте.
+        $foundUser = User::findOne(['vk_id' => $vkId]);
+        if (!$foundUser && $email) {
+            $foundUser = User::findOne(['email' => $email]);
+        }
+
         if ($foundUser) {
-            $foundUser->vk_id = $userAttributes['user_id'];
+            $foundUser->vk_id = $vkId;
             if (!$foundUser->save()) {
                 throw new \Exception('Не удалось сохранить пользователя.');
             }
