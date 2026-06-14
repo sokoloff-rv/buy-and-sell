@@ -19,7 +19,7 @@ class MainController extends Controller
             ->all();
 
         return $this->render('index', [
-            'categories' => Category::findWithOfferCounts(true),
+            'categories' => Category::findWithOfferCounts(),
             'newOffers' => $newOffers,
             'mostDiscussed' => Offer::getMostDiscussed(8),
         ]);

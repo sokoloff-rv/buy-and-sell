@@ -44,7 +44,7 @@ $this->title = $offer->title;
                         <li>
                             <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="category-tile category-tile--small">
                                 <span class="category-tile__image">
-                                    <img src="<?= Html::encode($category->randomImageUrl) ?>" alt="Иконка категории">
+                                    <img src="<?= Html::encode($category->imageUrl) ?>" srcset="<?= Html::encode($category->retinaImageUrl) ?> 2x" alt="Иконка категории">
                                 </span>
                                 <span class="category-tile__label"><?= Html::encode($category->name) ?></span>
                             </a>

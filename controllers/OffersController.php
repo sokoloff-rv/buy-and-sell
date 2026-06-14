@@ -147,7 +147,7 @@ class OffersController extends AccessController
             'offers' => $dataProvider->getModels(),
             'pagination' => $dataProvider->getPagination(),
             'category' => $category,
-            'categories' => Category::findWithOfferCounts(false),
+            'categories' => Category::findWithOfferCounts(),
         ]);
     }
 

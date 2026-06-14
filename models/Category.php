@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 class Category extends \yii\db\ActiveRecord
 {
     public $offers_count = 0;
@@ -36,33 +34,27 @@ class Category extends \yii\db\ActiveRecord
             ->viaTable('{{%offer_categories}}', ['category_id' => 'id']);
     }
 
-    public static function findWithOfferCounts(bool $onlyWithOffers = false): array
+    public static function findWithOfferCounts(): array
     {
-        $query = self::find()
+        return self::find()
             ->alias('categories')
             ->select(['categories.*', 'COUNT(offer_categories.offer_id) AS offers_count'])
             ->leftJoin('{{%offer_categories}} offer_categories', 'offer_categories.category_id = categories.id')
             ->groupBy('categories.id')
-            ->orderBy(['categories.name' => SORT_ASC, 'categories.id' => SORT_ASC]);
-
-        if ($onlyWithOffers) {
-            $query->having(['>', 'COUNT(offer_categories.offer_id)', 0]);
-        }
-
-        return $query->all();
+            ->orderBy(['categories.name' => SORT_ASC, 'categories.id' => SORT_ASC])
+            ->all();
     }
 
-    public function getRandomImageUrl(): string
+    public function getImageUrl(): string
     {
-        $files = glob(Yii::getAlias('@webroot/img/cat*.jpg')) ?: [];
-        $files = array_values(array_filter($files, static function (string $file): bool {
-            return !str_contains($file, '@2x') && !str_contains($file, 'cat-s');
-        }));
+        return $this->image ?: '/img/blank.png';
+    }
 
-        if (!$files) {
-            return $this->image ?: '/img/blank.png';
-        }
+    public function getRetinaImageUrl(): string
+    {
+        $image = $this->getImageUrl();
+        $dot = strrpos($image, '.');
 
-        return '/img/' . basename($files[array_rand($files)]);
+        return $dot === false ? $image : substr($image, 0, $dot) . '@2x' . substr($image, $dot);
     }
 }

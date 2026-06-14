@@ -15,7 +15,7 @@ $currentCategoryId = Yii::$app->request->get('id');
                 ?>
                 <a href="<?= Url::to(['offers/category', 'id' => $category->id]) ?>" class="category-tile <?= $tileClass ?>">
                     <span class="category-tile__image">
-                        <?= Html::img($category->randomImageUrl, ['alt' => 'Иконка категории']) ?>
+                        <?= Html::img($category->imageUrl, ['srcset' => $category->retinaImageUrl . ' 2x', 'alt' => 'Иконка категории']) ?>
                     </span>
                     <span class="category-tile__label">
                         <?= Html::encode($category->name) ?>
