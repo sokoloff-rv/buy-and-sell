@@ -55,9 +55,12 @@ return [
             'class' => 'app\components\SearchComponent',
         ],
         'imageStorage' => [
-            'class' => 'app\components\ImageStorage',
+            'class' => 'Double\FakeImageStorage',
             'uploadPath' => '@runtime/test-uploads',
             'uploadUrl' => '/test-uploads',
+        ],
+        'firebase' => [
+            'class' => 'Double\FakeFirebase',
         ],
         'errorHandler' => [
             'errorAction' => 'main/error',

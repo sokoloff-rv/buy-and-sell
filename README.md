@@ -150,12 +150,23 @@ cp config/test_db-local.php.example config/test_db-local.php
 
 Учетной записи СУБД необходим полный доступ к тестовой базе. Параметры также можно передать через `TEST_DB_DSN`, `TEST_DB_USER` и `TEST_DB_PASSWORD`.
 
-Запуск проверок:
+Перед первым запуском соберите классы-акторы Codeception:
 
 ```bash
 php vendor/codeception/codeception/codecept build
-composer test
 ```
+
+Наборы тестов разделены, чтобы основной прогон не зависел от сети и внешних сервисов:
+
+```bash
+composer test       # unit и functional тесты, без обращения к Firebase
+composer test:live  # отдельная проверка реальных Firebase Rules (нужны сеть и service account)
+composer test:all   # последовательно основной и live-наборы
+```
+
+`composer test` использует тестовые двойники Firebase, image storage и mailer, поэтому
+проходит офлайн. `composer test:live` запускает `tests/firebase_rules_check.php` против
+реальной базы Firebase, настроенной в проекте, и выполняется вручную при наличии доступа.
 
 ## Техническое задание
 

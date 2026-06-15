@@ -2,8 +2,8 @@
 
 namespace app\commands;
 
-use app\models\Offer;
 use app\models\User;
+use app\services\ChatNotificationCollector;
 use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -13,7 +13,7 @@ class ChatController extends Controller
     public function actionNotify(): int
     {
         $chats = Yii::$app->firebase->database->getReference('chats')->getSnapshot()->getValue();
-        $groups = $this->collectNotifications(is_array($chats) ? $chats : []);
+        $groups = (new ChatNotificationCollector())->collect(is_array($chats) ? $chats : []);
         $sent = 0;
 
         foreach ($groups as $recipientId => $group) {
@@ -50,46 +50,5 @@ class ChatController extends Controller
         $this->stdout("Отправлено уведомлений: {$sent}\n");
 
         return ExitCode::OK;
-    }
-
-    private function collectNotifications(array $chats): array
-    {
-        $groups = [];
-        foreach ($chats as $offerId => $dialogs) {
-            $offer = Offer::findOne((int) $offerId);
-            if ($offer === null || !is_array($dialogs)) {
-                continue;
-            }
-            foreach ($dialogs as $buyerId => $dialog) {
-                $meta = $dialog['meta'] ?? [];
-                if ((string) ($meta['sellerId'] ?? '') !== (string) $offer->user_id
-                    || (string) ($meta['buyerId'] ?? '') !== (string) $buyerId
-                    || (string) ($meta['offerId'] ?? '') !== (string) $offer->id
-                    || User::findOne((int) $buyerId) === null) {
-                    continue;
-                }
-                foreach (($dialog['messages'] ?? []) as $messageId => $message) {
-                    if (($message['read'] ?? true) !== false || ($message['notified'] ?? true) !== false) {
-                        continue;
-                    }
-                    $recipientId = (string) ($message['recipientId'] ?? '');
-                    $senderId = (string) ($message['senderId'] ?? '');
-                    $participants = [(string) $offer->user_id, (string) $buyerId];
-                    if (!in_array($recipientId, $participants, true)
-                        || !in_array($senderId, $participants, true)
-                        || $recipientId === $senderId) {
-                        continue;
-                    }
-
-                    $groups[$recipientId]['messages'][] = [
-                        'offer' => $offer,
-                        'text' => (string) ($message['text'] ?? ''),
-                    ];
-                    $groups[$recipientId]['paths'][] = "chats/{$offerId}/{$buyerId}/messages/{$messageId}";
-                }
-            }
-        }
-
-        return $groups;
     }
 }
